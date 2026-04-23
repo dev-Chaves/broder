@@ -1,0 +1,89 @@
+.alarm-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.alarm-card--disabled {
+  opacity: 0.65;
+}
+
+.alarm-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.alarm-card__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius);
+  background: var(--primary-bg);
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.alarm-card__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.alarm-card__meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.alarm-card__name {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.alarm-card__category {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.alarm-card__desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.alarm-card__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.alarm-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.alarm-detail__icon {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.alarm-card__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.btn-icon {
+  width: 0.9rem;
+  height: 0.9rem;
+}

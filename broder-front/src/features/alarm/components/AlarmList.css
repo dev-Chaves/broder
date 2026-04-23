@@ -1,0 +1,24 @@
+.alarm-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.alarm-list-error {
+  padding: 1rem;
+  background: #FEE2E2;
+  color: #991B1B;
+  border-radius: var(--radius);
+  font-weight: 500;
+}
+
+.alarm-list-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+}
+
+.alarm-list-empty__hint {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
