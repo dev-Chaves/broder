@@ -1,0 +1,28 @@
+.template-palette {
+  margin-bottom: 1.5rem;
+}
+
+.palette-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.palette-subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.palette-error {
+  padding: 1rem;
+  color: #991B1B;
+  background: #FEE2E2;
+  border-radius: var(--radius);
+  font-weight: 500;
+}

@@ -1,0 +1,69 @@
+.tour-tooltip {
+  position: fixed;
+  z-index: 210;
+  width: min(320px, 90vw);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  padding: 1.25rem;
+  animation: tooltipIn 250ms ease-out;
+}
+
+@keyframes tooltipIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.tour-tooltip__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.tour-tooltip__badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-bg);
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+}
+
+.tour-tooltip__skip {
+  background: none;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color var(--transition);
+}
+
+.tour-tooltip__skip:hover {
+  color: var(--text);
+}
+
+.tour-tooltip__title {
+  font-size: 1.1rem;
+  margin-bottom: 0.4rem;
+}
+
+.tour-tooltip__text {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.tour-tooltip__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

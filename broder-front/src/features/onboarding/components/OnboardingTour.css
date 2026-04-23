@@ -1,0 +1,8 @@
+.onboarding-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(19, 78, 74, 0.35);
+  backdrop-filter: blur(2px);
+  pointer-events: auto;
+}
