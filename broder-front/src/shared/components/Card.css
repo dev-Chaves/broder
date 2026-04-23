@@ -1,0 +1,17 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.card[role='button'] {
+  cursor: pointer;
+}
+
+.card[role='button']:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
