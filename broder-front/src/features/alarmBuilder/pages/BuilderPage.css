@@ -7,3 +7,12 @@
 .builder-drop-zone {
   position: relative;
 }
+
+.builder-drop-zone--over .builder-canvas--empty {
+  border-color: var(--primary);
+  background: var(--primary-bg);
+}
+
+.builder-drop-zone--over .builder-canvas {
+  border-color: var(--primary);
+}

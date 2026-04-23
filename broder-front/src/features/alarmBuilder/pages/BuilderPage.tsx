@@ -3,6 +3,7 @@ import { DndContext, type DragEndEvent, useSensor, useSensors, PointerSensor, To
 import { useNavigate } from 'react-router-dom'
 import { TemplatePalette } from '../components/TemplatePalette.tsx'
 import { BuilderCanvas } from '../components/BuilderCanvas.tsx'
+import { DropZone } from '../components/DropZone.tsx'
 import { useTemplates } from '../hooks/useTemplates.ts'
 import type { AlarmTemplate } from '../api/builderTypes.ts'
 import { OnboardingTour } from '../../onboarding/components/OnboardingTour.tsx'
@@ -41,9 +42,9 @@ export default function BuilderPage() {
       <OnboardingTour />
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <TemplatePalette templates={templates} loading={loading} error={error} />
-        <div id="builder-canvas" className="builder-drop-zone">
+        <DropZone>
           <BuilderCanvas template={selectedTemplate} onCreated={handleCreated} />
-        </div>
+        </DropZone>
       </DndContext>
     </div>
   )
