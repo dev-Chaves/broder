@@ -1,3 +1,64 @@
 .alarms-page__title {
+  margin-bottom: 0.25rem;
+}
+
+.alarms-page__subtitle {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.alarms-page__error {
+  padding: 0.75rem;
+  background: #FEE2E2;
+  color: #991B1B;
+  border-radius: var(--radius);
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.alarms-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin-bottom: 1.25rem;
+}
+
+.alarms-filter__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border);
+  background: var(--bg);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.alarms-filter__chip:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.alarms-filter__chip--active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.alarms-filter__count {
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: rgba(0,0,0,0.08);
+  padding: 0.1rem 0.35rem;
+  border-radius: 999px;
+}
+
+.alarms-filter__chip--active .alarms-filter__count {
+  background: rgba(255,255,255,0.25);
 }

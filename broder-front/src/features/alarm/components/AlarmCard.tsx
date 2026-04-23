@@ -1,4 +1,4 @@
-import { Bell, Trash2, Power, Clock, BarChart3 } from 'lucide-react'
+import { Bell, Trash2, Power, Clock, BarChart3, Zap, Activity, CheckCircle2, AlertTriangle } from 'lucide-react'
 import { Badge } from '../../../shared/components/Badge.tsx'
 import { Button } from '../../../shared/components/Button.tsx'
 import { Card } from '../../../shared/components/Card.tsx'
@@ -13,6 +13,13 @@ const SEVERITY_VARIANT: Record<string, 'low' | 'medium' | 'high' | 'critical' | 
   CRITICAL: 'critical',
 }
 
+const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: typeof Zap }> = {
+  FIRING: { label: 'DISPARADO', color: '#DC2626', bg: '#FEE2E2', icon: Zap },
+  ACTIVE: { label: 'ATIVO', color: '#059669', bg: '#D1FAE5', icon: Activity },
+  RESOLVED: { label: 'RESOLVIDO', color: '#2563EB', bg: '#DBEAFE', icon: CheckCircle2 },
+  ERROR: { label: 'ERRO', color: '#92400E', bg: '#FEF3C7', icon: AlertTriangle },
+}
+
 interface AlarmCardProps {
   alarm: Alarm
   onToggle: (id: number, enabled: boolean) => void
@@ -20,17 +27,34 @@ interface AlarmCardProps {
 }
 
 export function AlarmCard({ alarm, onToggle, onDelete }: AlarmCardProps) {
+  const statusConfig = STATUS_CONFIG[alarm.status] || STATUS_CONFIG.ACTIVE
+  const StatusIcon = statusConfig.icon
+  const isFiring = alarm.status === 'FIRING'
+
   return (
-    <Card className={`alarm-card ${!alarm.enabled ? 'alarm-card--disabled' : ''}`}>
+    <Card
+      className={`alarm-card ${!alarm.enabled ? 'alarm-card--disabled' : ''} ${isFiring ? 'alarm-card--firing' : ''}`}
+    >
+      <div className="alarm-card__status-bar" style={{ background: statusConfig.color }} />
+
       <div className="alarm-card__header">
-        <div className="alarm-card__icon-wrap">
+        <div className="alarm-card__icon-wrap" style={{ background: statusConfig.bg, color: statusConfig.color }}>
           <Bell className="alarm-card__icon" aria-hidden="true" />
         </div>
         <div className="alarm-card__meta">
           <h3 className="alarm-card__name">{alarm.name}</h3>
           <span className="alarm-card__category">{alarm.category}</span>
         </div>
-        <Badge variant={SEVERITY_VARIANT[alarm.severity] || 'default'}>{alarm.severity}</Badge>
+        <div className="alarm-card__badges">
+          <span
+            className="alarm-card__status-badge"
+            style={{ color: statusConfig.color, background: statusConfig.bg }}
+          >
+            <StatusIcon className="status-icon" aria-hidden="true" />
+            {statusConfig.label}
+          </span>
+          <Badge variant={SEVERITY_VARIANT[alarm.severity] || 'default'}>{alarm.severity}</Badge>
+        </div>
       </div>
 
       {alarm.description && <p className="alarm-card__desc">{alarm.description}</p>}
@@ -42,8 +66,25 @@ export function AlarmCard({ alarm, onToggle, onDelete }: AlarmCardProps) {
         </div>
         <div className="alarm-detail">
           <Clock className="alarm-detail__icon" aria-hidden="true" />
-          <span>{formatDateTime(alarm.createdAt)}</span>
+          <span>Criado: {formatDateTime(alarm.createdAt)}</span>
         </div>
+        {alarm.lastEvaluatedAt && (
+          <div className="alarm-detail">
+            <Activity className="alarm-detail__icon" aria-hidden="true" />
+            <span>Avaliado: {formatDateTime(alarm.lastEvaluatedAt)}</span>
+          </div>
+        )}
+        {alarm.lastFiredAt && (
+          <div className="alarm-detail alarm-detail--firing">
+            <Zap className="alarm-detail__icon" aria-hidden="true" />
+            <span>Disparou: {formatDateTime(alarm.lastFiredAt)}</span>
+          </div>
+        )}
+        {alarm.usages !== null && alarm.usages > 0 && (
+          <div className="alarm-detail">
+            <span className="alarm-detail__count">{alarm.usages}x disparos</span>
+          </div>
+        )}
       </div>
 
       <div className="alarm-card__actions">
