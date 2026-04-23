@@ -1,10 +1,11 @@
 import { useDraggable } from '@dnd-kit/core'
+import type { ElementType } from 'react'
 import { Activity, Cpu, Database, Globe, Layers, Timer } from 'lucide-react'
 import { Card } from '../../../shared/components/Card.tsx'
 import type { AlarmTemplate } from '../api/builderTypes.ts'
 import './TemplateCard.css'
 
-const ICON_MAP: Record<string, React.ElementType> = {
+const ICON_MAP: Record<string, ElementType> = {
   cpu_usage_high: Cpu,
   memory_heap_high: Layers,
   http_error_rate: Globe,
@@ -19,7 +20,12 @@ const ICON_MAP: Record<string, React.ElementType> = {
   thread_count_high: Cpu,
 }
 
-export function TemplateCard({ template }: { template: AlarmTemplate }) {
+interface TemplateCardProps {
+  template: AlarmTemplate
+  onClick?: () => void
+}
+
+export function TemplateCard({ template, onClick }: TemplateCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: template.id,
     data: { template },
@@ -39,7 +45,7 @@ export function TemplateCard({ template }: { template: AlarmTemplate }) {
       {...attributes}
       className={`template-card ${isDragging ? 'template-card--dragging' : ''}`}
     >
-      <Card className="template-card__inner">
+      <Card className="template-card__inner" onClick={onClick}>
         <div className="template-card__icon-wrap">
           <Icon className="template-card__icon" aria-hidden="true" />
         </div>

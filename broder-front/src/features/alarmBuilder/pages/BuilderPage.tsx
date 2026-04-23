@@ -19,6 +19,10 @@ export default function BuilderPage() {
     useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } })
   )
 
+  const handleSelect = useCallback((template: AlarmTemplate) => {
+    setSelectedTemplate(template)
+  }, [])
+
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       const { active, over } = event
@@ -41,9 +45,9 @@ export default function BuilderPage() {
     <div className="builder-page">
       <OnboardingTour />
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-        <TemplatePalette templates={templates} loading={loading} error={error} />
+        <TemplatePalette templates={templates} loading={loading} error={error} onSelect={handleSelect} />
         <DropZone>
-          <BuilderCanvas template={selectedTemplate} onCreated={handleCreated} />
+          <BuilderCanvas key={selectedTemplate?.id ?? 'empty'} template={selectedTemplate} onCreated={handleCreated} />
         </DropZone>
       </DndContext>
     </div>

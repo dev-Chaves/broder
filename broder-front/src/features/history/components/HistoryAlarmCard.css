@@ -1,0 +1,82 @@
+.history-alarm-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  cursor: pointer;
+}
+
+.history-alarm-card--disabled {
+  opacity: 0.65;
+}
+
+.history-alarm-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.history-alarm-card__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius);
+  background: var(--primary-bg);
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.history-alarm-card__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.history-alarm-card__meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.history-alarm-card__name {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-alarm-card__category {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.history-alarm-card__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.history-alarm-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.history-alarm-detail__icon {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.history-alarm-card__hint {
+  font-size: 0.8rem;
+  color: var(--primary);
+  font-weight: 600;
+  text-align: center;
+  padding-top: 0.25rem;
+  border-top: 1px dashed var(--border);
+}

@@ -56,26 +56,38 @@ export function TourTooltip({
 
     setStyle({ top, left, transform: 'none' })
 
+    const originalPosition = target.style.position
+    const originalZIndex = target.style.zIndex
     target.style.position = 'relative'
     target.style.zIndex = '201'
     target.scrollIntoView({ behavior: 'smooth', block: 'center' })
 
     return () => {
-      target.style.zIndex = ''
+      target.style.position = originalPosition
+      target.style.zIndex = originalZIndex
     }
   }, [targetSelector, step])
 
   return (
-    <div ref={tooltipRef} className="tour-tooltip" style={style}>
+    <div
+      ref={tooltipRef}
+      className="tour-tooltip"
+      style={style}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tour-title"
+    >
       <div className="tour-tooltip__header">
         <span className="tour-tooltip__badge">
           {step} / {total}
         </span>
-        <button className="tour-tooltip__skip" onClick={onSkip}>
+        <button type="button" className="tour-tooltip__skip" onClick={onSkip}>
           Pular
         </button>
       </div>
-      <h3 className="tour-tooltip__title">{title}</h3>
+      <h3 id="tour-title" className="tour-tooltip__title">
+        {title}
+      </h3>
       <p className="tour-tooltip__text">{text}</p>
       <div className="tour-tooltip__actions">
         {!isFirst && (

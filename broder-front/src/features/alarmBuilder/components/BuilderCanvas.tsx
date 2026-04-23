@@ -18,8 +18,8 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [threshold, setThreshold] = useState('')
-  const [comparison, setComparison] = useState('>')
-  const [severity, setSeverity] = useState('MEDIUM')
+  const [comparison, setComparison] = useState(template?.defaultComparison || '>')
+  const [severity, setSeverity] = useState(template?.defaultSeverity || 'MEDIUM')
   const [filters, setFilters] = useState<Record<string, string>>({})
   const [preview, setPreview] = useState<AlarmPreviewResponse | null>(null)
   const [previewLoading, setPreviewLoading] = useState(false)
@@ -37,7 +37,7 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
         templateId: template.id,
         filters,
         comparison,
-        threshold: threshold || template.defaultThreshold,
+        threshold: threshold !== '' ? threshold : template.defaultThreshold,
         severity,
       }
       const res = await builderApi.preview(dto)
@@ -60,7 +60,7 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
         templateId: template.id,
         filters,
         comparison,
-        threshold: threshold || template.defaultThreshold,
+        threshold: threshold !== '' ? threshold : template.defaultThreshold,
         severity,
       }
       await builderApi.build(dto)
@@ -131,13 +131,14 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
 
         <div className="field">
           <span className="field__label">Comparação</span>
-          <div className="comparison-group">
+          <div className="comparison-group" role="group" aria-label="Operador de comparação">
             {COMPARISONS.map((c) => (
               <button
                 key={c}
                 type="button"
                 className={`comparison-chip ${comparison === c ? 'comparison-chip--active' : ''}`}
                 onClick={() => setComparison(c)}
+                aria-pressed={comparison === c}
               >
                 {c}
               </button>
@@ -160,13 +161,14 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
 
         <div className="field">
           <span className="field__label">Severidade</span>
-          <div className="severity-group">
+          <div className="severity-group" role="group" aria-label="Nível de severidade">
             {SEVERITIES.map((s) => (
               <button
                 key={s}
                 type="button"
                 className={`severity-chip severity-chip--${s.toLowerCase()} ${severity === s ? 'severity-chip--active' : ''}`}
                 onClick={() => setSeverity(s)}
+                aria-pressed={severity === s}
               >
                 {s}
               </button>
@@ -175,7 +177,7 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
         </div>
       </div>
 
-      {error && <div className="builder-error">{error}</div>}
+      {error && <div className="builder-error" role="alert">{error}</div>}
 
       <div className="builder-actions">
         <Button variant="secondary" onClick={handlePreview} disabled={previewLoading}>

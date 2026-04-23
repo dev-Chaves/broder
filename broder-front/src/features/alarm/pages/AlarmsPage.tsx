@@ -5,11 +5,12 @@ import './AlarmsPage.css'
 
 export default function AlarmsPage() {
   const { alarms, loading, error, refetch } = useAlarms()
-  const { toggleEnabled, remove } = useAlarmMutations(refetch)
+  const { toggleEnabled, remove, error: mutationError } = useAlarmMutations(refetch)
 
   return (
     <div className="alarms-page">
       <h1 className="alarms-page__title">Seus Alarmes</h1>
+      {mutationError && <div className="alarms-page__error" role="alert">{mutationError}</div>}
       <AlarmList
         alarms={alarms}
         loading={loading}

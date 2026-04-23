@@ -15,11 +15,11 @@ interface HistoryListProps {
 
 export function HistoryList({ entries, loading, error, page, totalPages, onPageChange }: HistoryListProps) {
   if (loading) return <Loading message="Carregando histórico..." />
-  if (error) return <div className="history-list-error">{error}</div>
+  if (error) return <div className="history-list-error" role="alert">{error}</div>
   if (entries.length === 0) {
     return (
       <div className="history-list-empty">
-        <p>Nenhum histórico encontrado.</p>
+        <p>Nenhum histórico encontrado para este alarme.</p>
       </div>
     )
   }
