@@ -1,0 +1,25 @@
+quarkus:
+  datasource:
+    db-kind: sqlite
+    jdbc:
+      url: jdbc:sqlite:./data/data.db
+
+  hibernate-orm:
+    schema-management:
+      strategy: update
+    log:
+      format-sql: true
+
+  rest-client:
+    prometheus:
+      url: http://localhost:9090
+      connect-timeout: 2000
+      read-timeout: 5000
+
+  scheduler:
+    enabled: true
+
+  http:
+    cors:
+      ~: true
+      origins: http://localhost:3000

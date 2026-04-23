@@ -1,0 +1,22 @@
+meta:
+  name: JVM Metrics - Thread Count
+  type: http
+  seq: 12
+
+name: JVM Metrics - Thread Count
+type: http
+
+method: post
+
+body:
+  type: json
+  json: >
+    {
+      "query": "jvm_threads_live"
+    }
+
+url: {{broder.baseUrl}}/prometheus/query
+
+headers:
+  - name: Content-Type
+    value: application/json

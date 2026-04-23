@@ -1,0 +1,19 @@
+meta:
+  name: Get Label Values - status
+  type: http
+  seq: 7
+
+name: Get Label Values - status
+type: http
+
+method: get
+
+body:
+  type: json
+  json: "{}"
+
+url: {{broder.baseUrl}}/prometheus/labels/status/values
+
+headers:
+  - name: Content-Type
+    value: application/json

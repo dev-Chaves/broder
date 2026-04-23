@@ -1,0 +1,22 @@
+meta:
+  name: Database - Connection Pool
+  type: http
+  seq: 14
+
+name: Database - Connection Pool
+type: http
+
+method: post
+
+body:
+  type: json
+  json: >
+    {
+      "query": "hikaricp_connections_active"
+    }
+
+url: {{broder.baseUrl}}/prometheus/query
+
+headers:
+  - name: Content-Type
+    value: application/json

@@ -1,0 +1,22 @@
+meta:
+  name: Instant Query - Error Rate
+  type: http
+  seq: 2
+
+name: Instant Query - Error Rate
+type: http
+
+method: post
+
+body:
+  type: json
+  json: >
+    {
+      "query": "(rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[1m]) / rate(http_server_requests_seconds_count[1m])) * 100"
+    }
+
+url: {{broder.baseUrl}}/prometheus/query
+
+headers:
+  - name: Content-Type
+    value: application/json

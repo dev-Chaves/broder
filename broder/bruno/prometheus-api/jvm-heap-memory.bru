@@ -1,0 +1,22 @@
+meta:
+  name: JVM Metrics - Heap Memory
+  type: http
+  seq: 10
+
+name: JVM Metrics - Heap Memory
+type: http
+
+method: post
+
+body:
+  type: json
+  json: >
+    {
+      "query": "jvm_memory_used_bytes{area=\"heap\"}"
+    }
+
+url: {{broder.baseUrl}}/prometheus/query
+
+headers:
+  - name: Content-Type
+    value: application/json

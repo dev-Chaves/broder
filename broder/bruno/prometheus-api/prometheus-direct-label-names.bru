@@ -1,0 +1,19 @@
+meta:
+  name: Direct Prometheus - Label Names
+  type: http
+  seq: 9
+
+name: Direct Prometheus - Label Names
+type: http
+
+method: get
+
+body:
+  type: json
+  json: "{}"
+
+url: {{prometheus.url}}/api/v1/label/__name__/values
+
+headers:
+  - name: Content-Type
+    value: application/json

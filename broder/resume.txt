@@ -1,0 +1,79 @@
+Broder
+Broder é uma ferramenta leve de monitoramento e alertas para métricas expostas via Prometheus.
+O objetivo é simplificar a criação de alertas e visualização básica sem o overhead de ferramentas mais complexas.
+Problema
+Ferramentas como Zabbix e o ecossistema Prometheus + Grafana + Alertmanager são poderosas, mas exigem:
+configuração extensa
+conhecimento técnico (PromQL, pipelines de alertas)
+manutenção de múltiplos componentes
+Broder resolve isso oferecendo uma abordagem mais simples, focada em:
+setup rápido
+criação de alertas via interface visual
+execução leve e local (Docker)
+Objetivo
+Ser uma alternativa simples para times pequenos e projetos em estágio inicial que precisam de:
+monitoramento básico
+alertas rápidos
+baixo custo operacional
+Stack
+Backend: Quarkus
+Frontend: React + TypeScript
+Banco: SQLite
+Fonte de métricas: Prometheus (via HTTP API)
+Como funciona
+O usuário conecta um endpoint do Prometheus
+Broder consulta métricas via API (/api/v1/query)
+O usuário cria alertas via UI (sem necessidade de escrever PromQL manualmente)
+O sistema avalia os alertas periodicamente
+Quando uma condição é atendida, o alerta é disparado
+Funcionalidades (MVP)
+Cadastro de datasource (Prometheus)
+Listagem de métricas disponíveis
+Criação de alertas via UI
+Execução periódica de regras
+Histórico de alertas (firing/resolved)
+Silenciamento de alertas
+Notificações básicas (ex: webhook)
+Não é objetivo
+Substituir o Prometheus (não armazena métricas)
+Ser um TSDB
+Competir com todas as features do Zabbix ou Grafana
+Arquitetura
+Prometheus ---> Broder (Quarkus) ---> SQLite
+                   |
+                   +--> React UI
+                   +--> Notification Engine
+Prometheus continua sendo a fonte de verdade das métricas
+Broder atua como motor de alertas + interface
+SQLite armazena apenas configuração e estado
+Execução via Docker
+Exemplo de uso com Docker Compose:
+version: "3.8"
+
+services:
+  broder:
+    image: broder:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - BRODER_DB_PATH=/app/data/broder.db
+Após subir:
+http://localhost:8080
+Estrutura do projeto
+backend/   -> Quarkus (API + engine de alertas)
+frontend/  -> React (UI)
+Roadmap (inicial)
+ Canais de notificação (Slack, Email)
+ Agrupamento e deduplicação de alertas
+ Dashboard básico
+Visão de produto
+Broder não tenta substituir ferramentas completas.
+Ele existe para resolver um problema específico:
+"Monitorar e criar alertas em cima do Prometheus de forma simples e rápida."
+Se quiser, posso te ajudar depois a montar:
+estrutura de pastas real do projeto
+entidades (Alarm, Rule, Execution, Notification)
+fluxo de avaliação de alertas (engine)
+modelo inicial de banco SQLite

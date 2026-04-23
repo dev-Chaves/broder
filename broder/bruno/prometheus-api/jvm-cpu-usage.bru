@@ -1,0 +1,22 @@
+meta:
+  name: JVM Metrics - CPU Usage
+  type: http
+  seq: 13
+
+name: JVM Metrics - CPU Usage
+type: http
+
+method: post
+
+body:
+  type: json
+  json: >
+    {
+      "query": "process_cpu_usage"
+    }
+
+url: {{broder.baseUrl}}/prometheus/query
+
+headers:
+  - name: Content-Type
+    value: application/json

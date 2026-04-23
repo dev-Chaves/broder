@@ -1,0 +1,25 @@
+meta:
+  name: Range Query - Memory Usage
+  type: http
+  seq: 4
+
+name: Range Query - Memory Usage
+type: http
+
+method: post
+
+body:
+  type: json
+  json: >
+    {
+      "query": "jvm_memory_used_bytes{area=\"heap\"}",
+      "start": "1700000000",
+      "end": "1700003600",
+      "step": "60"
+    }
+
+url: {{broder.baseUrl}}/prometheus/query/range
+
+headers:
+  - name: Content-Type
+    value: application/json

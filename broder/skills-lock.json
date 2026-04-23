@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "quarkus": {
+      "source": "b6k-dev/quarkus-skill",
+      "sourceType": "github",
+      "computedHash": "e136388e9df0d7854c5a9e07d25df94373e3237884036c275958dbd3fd6332e6"
+    }
+  }
+}

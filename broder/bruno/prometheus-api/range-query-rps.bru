@@ -1,0 +1,25 @@
+meta:
+  name: Range Query - RPS Over Time
+  type: http
+  seq: 5
+
+name: Range Query - RPS Over Time
+type: http
+
+method: post
+
+body:
+  type: json
+  json: >
+    {
+      "query": "rate(http_server_requests_seconds_count[1m])",
+      "start": "1700000000",
+      "end": "1700003600",
+      "step": "60"
+    }
+
+url: {{broder.baseUrl}}/prometheus/query/range
+
+headers:
+  - name: Content-Type
+    value: application/json

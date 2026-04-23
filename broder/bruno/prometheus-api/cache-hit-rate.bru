@@ -1,0 +1,22 @@
+meta:
+  name: Cache - Hit Rate
+  type: http
+  seq: 15
+
+name: Cache - Hit Rate
+type: http
+
+method: post
+
+body:
+  type: json
+  json: >
+    {
+      "query": "(rate(cache_gets_hit_total[5m]) / rate(cache_gets_total[5m])) * 100"
+    }
+
+url: {{broder.baseUrl}}/prometheus/query
+
+headers:
+  - name: Content-Type
+    value: application/json

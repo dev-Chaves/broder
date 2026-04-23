@@ -1,0 +1,19 @@
+meta:
+  name: Direct Prometheus - Query
+  type: http
+  seq: 8
+
+name: Direct Prometheus - Query
+type: http
+
+method: get
+
+body:
+  type: json
+  json: "{}"
+
+url: {{prometheus.url}}/api/v1/query?query=http_server_requests_seconds_count
+
+headers:
+  - name: Content-Type
+    value: application/json

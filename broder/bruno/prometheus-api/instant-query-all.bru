@@ -1,0 +1,22 @@
+meta:
+  name: Instant Query - Count All Requests
+  type: http
+  seq: 1
+
+name: Instant Query - Count All Requests
+type: http
+
+method: post
+
+body:
+  type: json
+  json: >
+    {
+      "query": "http_server_requests_seconds_count"
+    }
+
+url: {{broder.baseUrl}}/prometheus/query
+
+headers:
+  - name: Content-Type
+    value: application/json

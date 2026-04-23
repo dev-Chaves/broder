@@ -1,0 +1,22 @@
+meta:
+  name: JVM Metrics - GC Pause
+  type: http
+  seq: 11
+
+name: JVM Metrics - GC Pause
+type: http
+
+method: post
+
+body:
+  type: json
+  json: >
+    {
+      "query": "rate(jvm_gc_pause_seconds_sum[1m])"
+    }
+
+url: {{broder.baseUrl}}/prometheus/query
+
+headers:
+  - name: Content-Type
+    value: application/json

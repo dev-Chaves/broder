@@ -1,0 +1,8 @@
+{
+  "version": "1",
+  "name": "broder Prometheus API",
+  "type": "collection",
+  "description": "Collection for testing broder's Prometheus integration (WebClient reactive). The monitored Spring application exposes Micrometer metrics at /actuator/prometheus.",
+  "author": "broder",
+  "repository": "https://github.com/broder/broder"
+}

@@ -1,0 +1,22 @@
+meta:
+  name: Instant Query - P95 Latency
+  type: http
+  seq: 3
+
+name: Instant Query - P95 Latency
+type: http
+
+method: post
+
+body:
+  type: json
+  json: >
+    {
+      "query": "histogram_quantile(0.95, rate(http_server_requests_seconds_bucket[5m]))"
+    }
+
+url: {{broder.baseUrl}}/prometheus/query
+
+headers:
+  - name: Content-Type
+    value: application/json
