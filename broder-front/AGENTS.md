@@ -19,7 +19,7 @@
 # Install dependencies
 pnpm install
 
-# Dev server (Vite default port 5173)
+# Dev server (port 3000)
 pnpm dev
 
 # Type-check + build (order matters: tsc first)
