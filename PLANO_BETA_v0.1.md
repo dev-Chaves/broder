@@ -212,7 +212,7 @@ Base sólida, testes passando, observabilidade completa, notificações via webh
 - [x] Modal exibe: "Are you sure you want to delete alarm 'X'?" + botões "Cancel" e "Delete"
 - [x] Alarme só é deletado após confirmação
 - [x] Modal pode ser fechado com ESC ou clicando fora
-- [ ] Teste unitário cobre o fluxo de cancelamento
+- [x] Teste unitário cobre o fluxo de cancelamento
 
 ---
 
@@ -226,7 +226,7 @@ Base sólida, testes passando, observabilidade completa, notificações via webh
 - [x] `ErrorBoundary` implementado no nível da aplicação (router ou `App.tsx`)
 - [x] Erros em componentes filhos exibem uma mensagem amigável: "Something went wrong. Please reload the page."
 - [x] Erro é logado no console para debug
-- [ ] Teste verifica que um componente que lança erro não derruba a aplicação inteira
+- [x] Teste verifica que um componente que lança erro não derruba a aplicação inteira
 
 ---
 
