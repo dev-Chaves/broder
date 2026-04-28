@@ -14,12 +14,12 @@ interface HistoryTableProps {
 }
 
 export function HistoryTable({ entries, loading, error, page, totalPages, onPageChange }: HistoryTableProps) {
-  if (loading) return <Loading message="Carregando histórico..." />
+  if (loading) return <Loading message="Loading history..." />
   if (error) return <div className="history-list-error" role="alert">{error}</div>
   if (entries.length === 0) {
     return (
       <div className="history-list-empty">
-        <p>Nenhum histórico encontrado para este alarme.</p>
+        <p>No history found for this alarm.</p>
       </div>
     )
   }
@@ -30,10 +30,10 @@ export function HistoryTable({ entries, loading, error, page, totalPages, onPage
         <table className="history-table">
           <thead>
             <tr>
-              <th>Data/Hora</th>
-              <th>Alarme</th>
+              <th>Date/Time</th>
+              <th>Alarm</th>
               <th>Status</th>
-              <th className="history-table__col-numeric">Valor</th>
+              <th className="history-table__col-numeric">Value</th>
             </tr>
           </thead>
           <tbody>
@@ -51,10 +51,10 @@ export function HistoryTable({ entries, loading, error, page, totalPages, onPage
             onClick={() => onPageChange(page - 1)}
             disabled={page <= 0}
           >
-            Anterior
+            Previous
           </Button>
           <span className="history-pagination__info">
-            Página {page + 1} de {totalPages}
+            Page {page + 1} of {totalPages}
           </span>
           <Button
             variant="secondary"
@@ -62,7 +62,7 @@ export function HistoryTable({ entries, loading, error, page, totalPages, onPage
             onClick={() => onPageChange(page + 1)}
             disabled={page >= totalPages - 1}
           >
-            Próxima
+            Next
           </Button>
         </div>
       )}

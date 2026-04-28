@@ -43,7 +43,7 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
       const res = await builderApi.preview(dto)
       setPreview(res)
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erro no preview')
+      setError(e instanceof Error ? e.message : 'Preview error')
     } finally {
       setPreviewLoading(false)
     }
@@ -66,7 +66,7 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
       await builderApi.build(dto)
       onCreated()
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erro ao criar alarme')
+      setError(e instanceof Error ? e.message : 'Error creating alarm')
     } finally {
       setSubmitting(false)
     }
@@ -77,7 +77,7 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
       <div className="builder-canvas builder-canvas--empty">
         <Activity className="builder-canvas__placeholder-icon" aria-hidden="true" />
         <p className="builder-canvas__placeholder-text">
-          Arraste um template aqui para montar seu alarme
+          Drag a template here to build your alarm
         </p>
       </div>
     )
@@ -85,11 +85,11 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
 
   return (
     <div className="builder-canvas">
-      <h2 className="builder-canvas__title">Montando: {template.name}</h2>
+      <h2 className="builder-canvas__title">Building: {template.name}</h2>
 
       <div className="builder-canvas__form">
         <label className="field">
-          <span className="field__label">Nome do alarme</span>
+          <span className="field__label">Alarm name</span>
           <input
             className="field__input"
             value={name}
@@ -99,18 +99,18 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
         </label>
 
         <label className="field">
-          <span className="field__label">Descrição</span>
+          <span className="field__label">Description</span>
           <input
             className="field__input"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Opcional"
+            placeholder="Optional"
           />
         </label>
 
         {template.supportedFilters.length > 0 && (
           <div className="field">
-            <span className="field__label">Filtros</span>
+            <span className="field__label">Filters</span>
             <div className="filters-grid">
               {template.supportedFilters.map((f) => (
                 <label key={f} className="filter-field">
@@ -121,7 +121,7 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
                     onChange={(e) =>
                       setFilters((prev) => ({ ...prev, [f]: e.target.value }))
                     }
-                    placeholder={`ex: valor`}
+                    placeholder={`e.g. value`}
                   />
                 </label>
               ))}
@@ -130,8 +130,8 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
         )}
 
         <div className="field">
-          <span className="field__label">Comparação</span>
-          <div className="comparison-group" role="group" aria-label="Operador de comparação">
+          <span className="field__label">Comparison</span>
+          <div className="comparison-group" role="group" aria-label="Comparison operator">
             {COMPARISONS.map((c) => (
               <button
                 key={c}
@@ -148,7 +148,7 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
 
         <label className="field">
           <span className="field__label">
-            Limite ({template.unit})
+            Threshold ({template.unit})
           </span>
           <input
             className="field__input"
@@ -160,8 +160,8 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
         </label>
 
         <div className="field">
-          <span className="field__label">Severidade</span>
-          <div className="severity-group" role="group" aria-label="Nível de severidade">
+          <span className="field__label">Severity</span>
+          <div className="severity-group" role="group" aria-label="Severity level">
             {SEVERITIES.map((s) => (
               <button
                 key={s}
@@ -181,38 +181,38 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
 
       <div className="builder-actions">
         <Button variant="secondary" onClick={handlePreview} disabled={previewLoading}>
-          {previewLoading ? 'Analisando...' : 'Preview'}
+          {previewLoading ? 'Analyzing...' : 'Preview'}
         </Button>
         <Button variant="cta" onClick={handleCreate} disabled={submitting}>
-          {submitting ? 'Criando...' : 'Criar Alarme'}
+          {submitting ? 'Creating...' : 'Create Alarm'}
         </Button>
       </div>
 
       {preview && (
         <Card className="preview-card">
-          <h3 className="preview-title">Resultado do Preview</h3>
+          <h3 className="preview-title">Preview Result</h3>
           <div className="preview-grid">
             <div className="preview-item">
-              <span className="preview-label">Valor atual</span>
+              <span className="preview-label">Current value</span>
               <span className="preview-value">{preview.currentValue ?? 'N/A'}</span>
             </div>
             <div className="preview-item">
-              <span className="preview-label">Limite</span>
+              <span className="preview-label">Threshold</span>
               <span className="preview-value">{preview.threshold}</span>
             </div>
             <div className="preview-item">
-              <span className="preview-label">Comparação</span>
+              <span className="preview-label">Comparison</span>
               <span className="preview-value">{preview.comparison}</span>
             </div>
             <div className="preview-item">
-              <span className="preview-label">Dispararia?</span>
+              <span className="preview-label">Would trigger?</span>
               <span className={`preview-value preview-value--${preview.wouldTrigger ? 'yes' : 'no'}`}>
-                {preview.wouldTrigger ? 'Sim' : 'Não'}
+                {preview.wouldTrigger ? 'Yes' : 'No'}
               </span>
             </div>
           </div>
           <div className="preview-query">
-            <span className="preview-label">Query gerada</span>
+            <span className="preview-label">Generated query</span>
             <code className="preview-query__code">{preview.generatedQuery}</code>
           </div>
         </Card>

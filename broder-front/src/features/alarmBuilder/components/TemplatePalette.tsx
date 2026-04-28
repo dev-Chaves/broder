@@ -11,13 +11,13 @@ interface TemplatePaletteProps {
 }
 
 export function TemplatePalette({ templates, loading, error, onSelect }: TemplatePaletteProps) {
-  if (loading) return <Loading message="Carregando templates..." />
+  if (loading) return <Loading message="Loading templates..." />
   if (error) return <div className="palette-error" role="alert">{error}</div>
 
   return (
-    <section className="template-palette" aria-label="Templates de alarme">
-      <h2 className="palette-title">Escolha um template</h2>
-      <p className="palette-subtitle">Arraste um card para a área de montagem, ou clique para selecionar</p>
+    <section className="template-palette" aria-label="Alarm templates">
+      <h2 className="palette-title">Choose a template</h2>
+      <p className="palette-subtitle">Drag a card to the build area, or click to select</p>
       <div className="palette-grid">
         {templates.map((t) => (
           <TemplateCard key={t.id} template={t} onClick={() => onSelect(t)} />

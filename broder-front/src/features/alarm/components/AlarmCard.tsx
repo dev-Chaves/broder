@@ -14,10 +14,10 @@ const SEVERITY_VARIANT: Record<string, 'low' | 'medium' | 'high' | 'critical' | 
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: typeof Zap }> = {
-  FIRING: { label: 'DISPARADO', color: '#EF4444', bg: 'rgba(220,38,38,0.15)', icon: Zap },
-  ACTIVE: { label: 'ATIVO', color: '#22C55E', bg: 'rgba(34,197,94,0.12)', icon: Activity },
-  RESOLVED: { label: 'RESOLVIDO', color: '#6B7280', bg: 'rgba(107,114,128,0.1)', icon: CheckCircle2 },
-  ERROR: { label: 'ERRO', color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', icon: AlertTriangle },
+  FIRING: { label: 'FIRING', color: '#EF4444', bg: 'rgba(220,38,38,0.15)', icon: Zap },
+  ACTIVE: { label: 'ACTIVE', color: '#22C55E', bg: 'rgba(34,197,94,0.12)', icon: Activity },
+  RESOLVED: { label: 'RESOLVED', color: '#6B7280', bg: 'rgba(107,114,128,0.1)', icon: CheckCircle2 },
+  ERROR: { label: 'ERROR', color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', icon: AlertTriangle },
 }
 
 interface AlarmCardProps {
@@ -68,23 +68,23 @@ export function AlarmCard({ alarm, onToggle, onDelete }: AlarmCardProps) {
           </div>
           <div className="alarm-detail">
             <Clock className="alarm-detail__icon" aria-hidden="true" />
-            <span>Criado: {formatDateTime(alarm.createdAt)}</span>
+            <span>Created: {formatDateTime(alarm.createdAt)}</span>
           </div>
           {alarm.lastEvaluatedAt && (
             <div className="alarm-detail">
               <Activity className="alarm-detail__icon" aria-hidden="true" />
-              <span>Avaliado: {formatDateTime(alarm.lastEvaluatedAt)}</span>
+              <span>Evaluated: {formatDateTime(alarm.lastEvaluatedAt)}</span>
             </div>
           )}
           {alarm.lastFiredAt && (
             <div className="alarm-detail alarm-detail--firing">
               <Zap className="alarm-detail__icon" aria-hidden="true" />
-              <span>Disparou: {formatDateTime(alarm.lastFiredAt)}</span>
+              <span>Fired: {formatDateTime(alarm.lastFiredAt)}</span>
             </div>
           )}
           {alarm.usages !== null && alarm.usages > 0 && (
             <div className="alarm-detail">
-              <span className="alarm-detail__count">{alarm.usages}x disparos</span>
+              <span className="alarm-detail__count">{alarm.usages}x firings</span>
             </div>
           )}
         </div>
@@ -98,11 +98,11 @@ export function AlarmCard({ alarm, onToggle, onDelete }: AlarmCardProps) {
             onClick={() => onToggle(alarm.id, !alarm.enabled)}
           >
             <Power className="btn-icon" aria-hidden="true" />
-            {alarm.enabled ? 'Desativar' : 'Ativar'}
+            {alarm.enabled ? 'Disable' : 'Enable'}
           </Button>
           <Button variant="ghost" size="sm" onClick={() => onDelete(alarm.id)}>
             <Trash2 className="btn-icon" aria-hidden="true" />
-            Excluir
+            Delete
           </Button>
         </div>
       )}

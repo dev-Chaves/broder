@@ -82,7 +82,7 @@ export function TourTooltip({
           {step} / {total}
         </span>
         <button type="button" className="tour-tooltip__skip" onClick={onSkip}>
-          Pular
+          Skip
         </button>
       </div>
       <h3 id="tour-title" className="tour-tooltip__title">
@@ -92,11 +92,11 @@ export function TourTooltip({
       <div className="tour-tooltip__actions">
         {!isFirst && (
           <Button variant="ghost" size="sm" onClick={onPrev}>
-            Voltar
+            Back
           </Button>
         )}
         <Button variant="primary" size="sm" onClick={onNext}>
-          {isLast ? 'Começar!' : 'Próximo'}
+          {isLast ? 'Start!' : 'Next'}
         </Button>
       </div>
     </div>

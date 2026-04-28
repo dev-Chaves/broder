@@ -20,19 +20,19 @@ export function Sidebar() {
           <li>
             <NavLink to="/" className="sidebar__link" end>
               <PlusCircle className="sidebar__link-icon" aria-hidden="true" />
-              <span className="sidebar__label">Criar Alarme</span>
+              <span className="sidebar__label">Create Alarm</span>
             </NavLink>
           </li>
           <li>
             <NavLink to="/alarms" className="sidebar__link">
               <Bell className="sidebar__link-icon" aria-hidden="true" />
-              <span className="sidebar__label">Alarmes</span>
+              <span className="sidebar__label">Alarms</span>
             </NavLink>
           </li>
           <li>
             <NavLink to="/history" className="sidebar__link">
               <History className="sidebar__link-icon" aria-hidden="true" />
-              <span className="sidebar__label">Histórico</span>
+              <span className="sidebar__label">History</span>
             </NavLink>
           </li>
         </ul>

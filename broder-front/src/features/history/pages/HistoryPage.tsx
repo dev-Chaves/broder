@@ -67,9 +67,9 @@ export default function HistoryPage() {
         <div className="history-page__header">
           <Button variant="ghost" size="sm" onClick={handleBack}>
             <ArrowLeft className="btn-icon" aria-hidden="true" />
-            Voltar
+            Back
           </Button>
-          <h1 className="history-page__title">Histórico: {selectedAlarm.name}</h1>
+          <h1 className="history-page__title">History: {selectedAlarm.name}</h1>
         </div>
 
         <TopTriggered entries={entries} />
@@ -95,14 +95,14 @@ export default function HistoryPage() {
 
   return (
     <div className="history-page">
-      <h1 className="history-page__title">Histórico</h1>
-      <p className="history-page__subtitle">Selecione um alarme para ver seu histórico</p>
+      <h1 className="history-page__title">History</h1>
+      <p className="history-page__subtitle">Select an alarm to view its history</p>
       {alarmsError && <div className="history-page__error" role="alert">{alarmsError}</div>}
       {alarmsLoading ? (
-        <p className="history-page__loading">Carregando alarmes...</p>
+        <p className="history-page__loading">Loading alarms...</p>
       ) : alarms.length === 0 ? (
         <div className="history-page__empty">
-          <p>Nenhum alarme criado ainda.</p>
+          <p>No alarms created yet.</p>
         </div>
       ) : (
         <div className="history-alarm-grid">

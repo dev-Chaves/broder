@@ -40,7 +40,7 @@ describe('AlarmCard', () => {
 
     expect(screen.getByText('CPU Usage High')).toBeInTheDocument()
     expect(screen.getByText('HIGH')).toBeInTheDocument()
-    expect(screen.getByText('ATIVO')).toBeInTheDocument()
+    expect(screen.getByText('ACTIVE')).toBeInTheDocument()
   })
 
   it('renders disabled state styling when alarm is disabled', () => {
@@ -50,20 +50,20 @@ describe('AlarmCard', () => {
     )
 
     expect(container.querySelector('.alarm-card--disabled')).toBeInTheDocument()
-    expect(screen.getByText('Ativar')).toBeInTheDocument()
+    expect(screen.getByText('Enable')).toBeInTheDocument()
   })
 
   it('calls onToggle when toggle button is clicked', () => {
     render(<AlarmCard alarm={mockAlarm} onToggle={onToggle} onDelete={onDelete} />)
 
-    fireEvent.click(screen.getByText('Desativar'))
+    fireEvent.click(screen.getByText('Disable'))
     expect(onToggle).toHaveBeenCalledWith(1, false)
   })
 
   it('calls onDelete when delete button is clicked', () => {
     render(<AlarmCard alarm={mockAlarm} onToggle={onToggle} onDelete={onDelete} />)
 
-    fireEvent.click(screen.getByText('Excluir'))
+    fireEvent.click(screen.getByText('Delete'))
     expect(onDelete).toHaveBeenCalledWith(1)
   })
 
@@ -74,6 +74,6 @@ describe('AlarmCard', () => {
     )
 
     expect(container.querySelector('.alarm-card--firing')).toBeInTheDocument()
-    expect(screen.getByText('DISPARADO')).toBeInTheDocument()
+    expect(screen.getByText('FIRING')).toBeInTheDocument()
   })
 })

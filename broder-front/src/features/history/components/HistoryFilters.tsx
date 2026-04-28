@@ -2,11 +2,11 @@ import { Search } from 'lucide-react'
 import './HistoryFilters.css'
 
 const PERIODS = [
-  { key: 'all', label: 'Todos' },
-  { key: 'today', label: 'Hoje' },
-  { key: 'yesterday', label: 'Ontem' },
-  { key: '7d', label: '7 dias' },
-  { key: '30d', label: '30 dias' },
+  { key: 'all', label: 'All' },
+  { key: 'today', label: 'Today' },
+  { key: 'yesterday', label: 'Yesterday' },
+  { key: '7d', label: '7 days' },
+  { key: '30d', label: '30 days' },
 ] as const
 
 type PeriodKey = (typeof PERIODS)[number]['key']
@@ -21,7 +21,7 @@ interface HistoryFiltersProps {
 export function HistoryFilters({ period, onPeriodChange, search, onSearchChange }: HistoryFiltersProps) {
   return (
     <div className="history-filters">
-      <div className="history-filters__periods" role="tablist" aria-label="Filtrar por período">
+      <div className="history-filters__periods" role="tablist" aria-label="Filter by period">
         {PERIODS.map((p) => (
           <button
             key={p.key}
@@ -40,7 +40,7 @@ export function HistoryFilters({ period, onPeriodChange, search, onSearchChange 
         <input
           type="text"
           className="history-filters__search-input"
-          placeholder="Buscar alarme..."
+          placeholder="Search alarm..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
         />

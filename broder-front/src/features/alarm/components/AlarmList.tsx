@@ -12,13 +12,13 @@ interface AlarmListProps {
 }
 
 export function AlarmList({ alarms, loading, error, onToggle, onDelete }: AlarmListProps) {
-  if (loading) return <Loading message="Carregando alarmes..." />
+  if (loading) return <Loading message="Loading alarms..." />
   if (error) return <div className="alarm-list-error" role="alert">{error}</div>
   if (alarms.length === 0) {
     return (
       <div className="alarm-list-empty">
-        <p>Nenhum alarme encontrado com esse filtro.</p>
-        <p className="alarm-list-empty__hint">Crie um novo alarme na aba "Criar Alarme".</p>
+        <p>No alarms found with this filter.</p>
+        <p className="alarm-list-empty__hint">Create a new alarm in the "Create Alarm" tab.</p>
       </div>
     )
   }

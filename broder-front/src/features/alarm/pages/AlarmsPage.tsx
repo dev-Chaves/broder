@@ -1,12 +1,16 @@
-import { useMemo, useEffect } from 'react'
+import { useMemo, useEffect, useState, useCallback } from 'react'
 import { useAlarms } from '../hooks/useAlarms.ts'
 import { useAlarmMutations } from '../hooks/useAlarmMutations.ts'
 import { AlarmList } from '../components/AlarmList.tsx'
+import { ConfirmModal } from '../../../shared/components/ConfirmModal.tsx'
+import type { Alarm } from '../api/alarmTypes.ts'
 import './AlarmsPage.css'
 
 export default function AlarmsPage() {
   const { alarms, loading, error, refetch } = useAlarms()
   const { toggleEnabled, remove, error: mutationError } = useAlarmMutations(refetch)
+
+  const [alarmToDelete, setAlarmToDelete] = useState<Alarm | null>(null)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -29,15 +33,33 @@ export default function AlarmsPage() {
 
   const count = firingAlarms.length
 
+  const handleDeleteRequest = useCallback((id: number) => {
+    const alarm = alarms.find((a) => a.id === id)
+    if (alarm) {
+      setAlarmToDelete(alarm)
+    }
+  }, [alarms])
+
+  const handleConfirmDelete = useCallback(() => {
+    if (alarmToDelete) {
+      remove(alarmToDelete.id)
+      setAlarmToDelete(null)
+    }
+  }, [alarmToDelete, remove])
+
+  const handleCancelDelete = useCallback(() => {
+    setAlarmToDelete(null)
+  }, [])
+
   return (
     <div className="alarms-page">
       <div className="alarms-page__header">
         <div>
-          <h1 className="alarms-page__title">Alarmes</h1>
+          <h1 className="alarms-page__title">Alarms</h1>
           <p className="alarms-page__subtitle">
             {count > 0
-              ? `${count} alarme${count > 1 ? 's' : ''} disparado${count > 1 ? 's' : ''}`
-              : 'Nenhum alarme disparado'}
+              ? `${count} alarm${count > 1 ? 's' : ''} firing`
+              : 'No alarms firing'}
           </p>
         </div>
       </div>
@@ -49,7 +71,17 @@ export default function AlarmsPage() {
         loading={loading}
         error={error}
         onToggle={toggleEnabled}
-        onDelete={remove}
+        onDelete={handleDeleteRequest}
+      />
+
+      <ConfirmModal
+        isOpen={alarmToDelete !== null}
+        title="Delete Alarm"
+        message={`Are you sure you want to delete the alarm "${alarmToDelete?.name}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
       />
     </div>
   )

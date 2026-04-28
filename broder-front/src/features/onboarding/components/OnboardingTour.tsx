@@ -4,23 +4,23 @@ import './OnboardingTour.css'
 
 const STEPS = [
   {
-    title: 'Bem-vindo ao Broder!',
-    text: 'Aqui você cria alarmes de forma super simples. Vamos começar?',
+    title: 'Welcome to Broder!',
+    text: 'Here you can create alarms in a super simple way. Let\'s get started?',
     target: null,
   },
   {
-    title: 'Escolha um template',
-    text: 'Cada card é um tipo de alarme pronto. Arraste um para a área de baixo.',
+    title: 'Choose a template',
+    text: 'Each card is a ready-made alarm type. Drag one to the area below.',
     target: '.template-palette',
   },
   {
-    title: 'Configure seu alarme',
-    text: 'Ajuste o limite, a comparação e a severidade do jeito que precisar.',
+    title: 'Configure your alarm',
+    text: 'Adjust the threshold, comparison, and severity however you need.',
     target: '.builder-canvas',
   },
   {
-    title: 'Crie e pronto!',
-    text: 'Clique em "Criar Alarme" e acompanhe tudo na aba "Alarmes". Divirta-se!',
+    title: 'Create and done!',
+    text: 'Click "Create Alarm" and monitor everything in the "Alarms" tab. Enjoy!',
     target: '.builder-actions',
   },
 ]
