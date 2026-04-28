@@ -1,5 +1,8 @@
 package org.acme.domain.alarm;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import io.quarkus.scheduler.Scheduled;
 import io.smallrye.common.annotation.Blocking;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -8,6 +11,7 @@ import org.jboss.logging.Logger;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @ApplicationScoped
 public class AlarmScheduler {
@@ -19,12 +23,28 @@ public class AlarmScheduler {
     private final AlarmEvaluator alarmEvaluator;
     private final AlarmEvaluationOrchestrator orchestrator;
 
+    private final Counter alarmsEvaluatedCounter;
+    private final AtomicInteger alarmsFiringGauge;
+    private final Timer schedulerDurationTimer;
+
     public AlarmScheduler(AlarmService alarmService,
                           AlarmEvaluator alarmEvaluator,
-                          AlarmEvaluationOrchestrator orchestrator) {
+                          AlarmEvaluationOrchestrator orchestrator,
+                          MeterRegistry meterRegistry) {
         this.alarmService = alarmService;
         this.alarmEvaluator = alarmEvaluator;
         this.orchestrator = orchestrator;
+
+        this.alarmsEvaluatedCounter = Counter.builder("broder.alarms.evaluated")
+                .description("Total number of alarm evaluations")
+                .register(meterRegistry);
+
+        this.alarmsFiringGauge = new AtomicInteger(0);
+        meterRegistry.gauge("broder.alarms.firing", alarmsFiringGauge);
+
+        this.schedulerDurationTimer = Timer.builder("broder.scheduler.duration")
+                .description("Time taken for each scheduler cycle in seconds")
+                .register(meterRegistry);
     }
 
     @Scheduled(every = "20s")
@@ -43,6 +63,7 @@ public class AlarmScheduler {
 
         if (activeAlarms.isEmpty()) {
             LOG.info("[SCHEDULER] No active alarms to evaluate");
+            alarmsFiringGauge.set(0);
             return;
         }
 
@@ -51,6 +72,7 @@ public class AlarmScheduler {
         int triggeredCount = 0;
         int resolvedCount = 0;
         int errorCount = 0;
+        int firingCount = 0;
 
         for (Alarm alarm : activeAlarms) {
             try {
@@ -67,6 +89,11 @@ public class AlarmScheduler {
                         alarm.getId(), previousStatus, newStatus, currentValue);
 
                 orchestrator.process(alarm, currentValue, newStatus, LocalDateTime.now());
+                alarmsEvaluatedCounter.increment();
+
+                if (newStatus == AlarmStatus.FIRING) {
+                    firingCount++;
+                }
 
                 if (newStatus == AlarmStatus.FIRING && previousStatus != AlarmStatus.FIRING) {
                     triggeredCount++;
@@ -86,8 +113,12 @@ public class AlarmScheduler {
             }
         }
 
+        alarmsFiringGauge.set(firingCount);
+
         long durationMs = System.currentTimeMillis() - cycleStart;
-        LOG.infof("[SCHEDULER] Cycle completed in %d ms | alarms=%d, triggered=%d, resolved=%d, errors=%d",
-                durationMs, activeAlarms.size(), triggeredCount, resolvedCount, errorCount);
+        schedulerDurationTimer.record(Duration.ofMillis(durationMs));
+
+        LOG.infof("[SCHEDULER] Cycle completed in %d ms | alarms=%d, triggered=%d, resolved=%d, errors=%d, firing=%d",
+                durationMs, activeAlarms.size(), triggeredCount, resolvedCount, errorCount, firingCount);
     }
 }
