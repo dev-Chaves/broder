@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Build artifacts
+**/target/
+**/dist/
+**/dist-ssr/
+**/.quarkus/
+
+# Node
+**/node_modules/
+**/pnpm-debug.log*
+
+# Runtime data
+**/data/*.db
+!**/src/main/resources/database/*.db
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log

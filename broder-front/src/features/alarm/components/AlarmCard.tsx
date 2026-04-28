@@ -14,10 +14,10 @@ const SEVERITY_VARIANT: Record<string, 'low' | 'medium' | 'high' | 'critical' | 
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: typeof Zap }> = {
-  FIRING: { label: 'DISPARADO', color: '#DC2626', bg: '#FEE2E2', icon: Zap },
-  ACTIVE: { label: 'ATIVO', color: '#059669', bg: '#D1FAE5', icon: Activity },
-  RESOLVED: { label: 'RESOLVIDO', color: '#2563EB', bg: '#DBEAFE', icon: CheckCircle2 },
-  ERROR: { label: 'ERRO', color: '#92400E', bg: '#FEF3C7', icon: AlertTriangle },
+  FIRING: { label: 'DISPARADO', color: '#EF4444', bg: 'rgba(220,38,38,0.15)', icon: Zap },
+  ACTIVE: { label: 'ATIVO', color: '#22C55E', bg: 'rgba(34,197,94,0.12)', icon: Activity },
+  RESOLVED: { label: 'RESOLVIDO', color: '#6B7280', bg: 'rgba(107,114,128,0.1)', icon: CheckCircle2 },
+  ERROR: { label: 'ERRO', color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', icon: AlertTriangle },
 }
 
 interface AlarmCardProps {
@@ -30,10 +30,11 @@ export function AlarmCard({ alarm, onToggle, onDelete }: AlarmCardProps) {
   const statusConfig = STATUS_CONFIG[alarm.status] || STATUS_CONFIG.ACTIVE
   const StatusIcon = statusConfig.icon
   const isFiring = alarm.status === 'FIRING'
+  const isResolved = alarm.status === 'RESOLVED'
 
   return (
     <Card
-      className={`alarm-card ${!alarm.enabled ? 'alarm-card--disabled' : ''} ${isFiring ? 'alarm-card--firing' : ''}`}
+      className={`alarm-card ${!alarm.enabled ? 'alarm-card--disabled' : ''} ${isFiring ? 'alarm-card--firing' : ''} ${isResolved ? 'alarm-card--resolved' : ''}`}
     >
       <div className="alarm-card__status-bar" style={{ background: statusConfig.color }} />
 
@@ -43,7 +44,7 @@ export function AlarmCard({ alarm, onToggle, onDelete }: AlarmCardProps) {
         </div>
         <div className="alarm-card__meta">
           <h3 className="alarm-card__name">{alarm.name}</h3>
-          <span className="alarm-card__category">{alarm.category}</span>
+          {!isResolved && <span className="alarm-card__category">{alarm.category}</span>}
         </div>
         <div className="alarm-card__badges">
           <span
@@ -53,54 +54,58 @@ export function AlarmCard({ alarm, onToggle, onDelete }: AlarmCardProps) {
             <StatusIcon className="status-icon" aria-hidden="true" />
             {statusConfig.label}
           </span>
-          <Badge variant={SEVERITY_VARIANT[alarm.severity] || 'default'}>{alarm.severity}</Badge>
+          {!isResolved && <Badge variant={SEVERITY_VARIANT[alarm.severity] || 'default'}>{alarm.severity}</Badge>}
         </div>
       </div>
 
-      {alarm.description && <p className="alarm-card__desc">{alarm.description}</p>}
+      {alarm.description && !isResolved && <p className="alarm-card__desc">{alarm.description}</p>}
 
-      <div className="alarm-card__details">
-        <div className="alarm-detail">
-          <BarChart3 className="alarm-detail__icon" aria-hidden="true" />
-          <span>{alarm.comparison} {alarm.threshold}</span>
-        </div>
-        <div className="alarm-detail">
-          <Clock className="alarm-detail__icon" aria-hidden="true" />
-          <span>Criado: {formatDateTime(alarm.createdAt)}</span>
-        </div>
-        {alarm.lastEvaluatedAt && (
+      {!isResolved && (
+        <div className="alarm-card__details">
           <div className="alarm-detail">
-            <Activity className="alarm-detail__icon" aria-hidden="true" />
-            <span>Avaliado: {formatDateTime(alarm.lastEvaluatedAt)}</span>
+            <BarChart3 className="alarm-detail__icon" aria-hidden="true" />
+            <span>{alarm.comparison} {alarm.threshold}</span>
           </div>
-        )}
-        {alarm.lastFiredAt && (
-          <div className="alarm-detail alarm-detail--firing">
-            <Zap className="alarm-detail__icon" aria-hidden="true" />
-            <span>Disparou: {formatDateTime(alarm.lastFiredAt)}</span>
-          </div>
-        )}
-        {alarm.usages !== null && alarm.usages > 0 && (
           <div className="alarm-detail">
-            <span className="alarm-detail__count">{alarm.usages}x disparos</span>
+            <Clock className="alarm-detail__icon" aria-hidden="true" />
+            <span>Criado: {formatDateTime(alarm.createdAt)}</span>
           </div>
-        )}
-      </div>
+          {alarm.lastEvaluatedAt && (
+            <div className="alarm-detail">
+              <Activity className="alarm-detail__icon" aria-hidden="true" />
+              <span>Avaliado: {formatDateTime(alarm.lastEvaluatedAt)}</span>
+            </div>
+          )}
+          {alarm.lastFiredAt && (
+            <div className="alarm-detail alarm-detail--firing">
+              <Zap className="alarm-detail__icon" aria-hidden="true" />
+              <span>Disparou: {formatDateTime(alarm.lastFiredAt)}</span>
+            </div>
+          )}
+          {alarm.usages !== null && alarm.usages > 0 && (
+            <div className="alarm-detail">
+              <span className="alarm-detail__count">{alarm.usages}x disparos</span>
+            </div>
+          )}
+        </div>
+      )}
 
-      <div className="alarm-card__actions">
-        <Button
-          variant={alarm.enabled ? 'secondary' : 'primary'}
-          size="sm"
-          onClick={() => onToggle(alarm.id, !alarm.enabled)}
-        >
-          <Power className="btn-icon" aria-hidden="true" />
-          {alarm.enabled ? 'Desativar' : 'Ativar'}
-        </Button>
-        <Button variant="ghost" size="sm" onClick={() => onDelete(alarm.id)}>
-          <Trash2 className="btn-icon" aria-hidden="true" />
-          Excluir
-        </Button>
-      </div>
+      {!isResolved && (
+        <div className="alarm-card__actions">
+          <Button
+            variant={alarm.enabled ? 'secondary' : 'primary'}
+            size="sm"
+            onClick={() => onToggle(alarm.id, !alarm.enabled)}
+          >
+            <Power className="btn-icon" aria-hidden="true" />
+            {alarm.enabled ? 'Desativar' : 'Ativar'}
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => onDelete(alarm.id)}>
+            <Trash2 className="btn-icon" aria-hidden="true" />
+            Excluir
+          </Button>
+        </div>
+      )}
     </Card>
   )
 }

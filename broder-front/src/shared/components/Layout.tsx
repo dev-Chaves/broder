@@ -1,11 +1,11 @@
 import { Outlet } from 'react-router-dom'
-import { Navbar } from './Navbar.tsx'
+import { Sidebar } from './Sidebar.tsx'
 import './Layout.css'
 
 export function Layout() {
   return (
     <div className="app-shell">
-      <Navbar />
+      <Sidebar />
       <main className="app-main">
         <Outlet />
       </main>

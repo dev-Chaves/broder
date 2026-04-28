@@ -12,7 +12,7 @@ quarkus:
 
   rest-client:
     prometheus:
-      url: http://localhost:9090
+      url: ${PROMETHEUS_URL:http://localhost:9090}
       connect-timeout: 2000
       read-timeout: 5000
 
@@ -22,4 +22,4 @@ quarkus:
   http:
     cors:
       ~: true
-      origins: http://localhost:3000
+      origins: ${CORS_ORIGINS:http://localhost:3000}

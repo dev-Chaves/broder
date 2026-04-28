@@ -1,63 +1,64 @@
 .history-entry {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
 }
 
-.history-entry__header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.history-entry:hover {
+  background: var(--surface-hover);
 }
 
-.history-entry__icon-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: var(--radius);
-  background: var(--primary-bg);
-  color: var(--primary);
-  flex-shrink: 0;
+.history-entry td {
+  padding: 0.6rem 0.85rem;
+  font-size: 0.82rem;
+  color: var(--text);
+  vertical-align: middle;
 }
 
-.history-entry__icon {
-  width: 1.1rem;
-  height: 1.1rem;
-}
-
-.history-entry__meta {
-  flex: 1;
-  min-width: 0;
+.history-entry__datetime {
+  white-space: nowrap;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .history-entry__alarm {
-  font-size: 0.95rem;
-  font-weight: 600;
-  margin: 0;
-  white-space: nowrap;
+  font-weight: 500;
+  max-width: 260px;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.history-entry__time {
-  font-size: 0.75rem;
-  color: var(--text-muted);
+.history-entry__status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.history-entry__status-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.history-entry__status--firing {
+  background: rgba(220, 38, 38, 0.15);
+  color: #F87171;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
+.history-entry__status--resolved {
+  background: rgba(34, 197, 94, 0.1);
+  color: #4ADE80;
+  border: 1px solid rgba(34, 197, 94, 0.2);
 }
 
 .history-entry__value {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-}
-
-.history-entry__label {
-  color: var(--text-muted);
-}
-
-.history-entry__number {
-  font-weight: 700;
-  color: var(--text);
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }

@@ -3,68 +3,79 @@
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  border: none;
+  border: 1px solid transparent;
   border-radius: var(--radius);
   font-family: var(--font-body);
   font-weight: 600;
   cursor: pointer;
-  transition: transform var(--transition), background var(--transition), box-shadow var(--transition);
+  transition: background var(--transition), border-color var(--transition), opacity var(--transition);
+  letter-spacing: 0.01em;
 }
 
 .btn:active {
-  transform: scale(0.97);
+  opacity: 0.85;
 }
 
 .btn--primary {
   background: var(--primary);
   color: #fff;
+  border-color: var(--primary);
 }
+
 .btn--primary:hover {
   background: var(--primary-light);
-  box-shadow: var(--shadow-hover);
+  border-color: var(--primary-light);
 }
 
 .btn--secondary {
-  background: var(--surface);
-  color: var(--primary);
-  border: 2px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
 }
+
 .btn--secondary:hover {
-  background: var(--primary-bg);
+  border-color: var(--border-strong);
+  background: var(--surface-hover);
 }
 
 .btn--cta {
-  background: var(--cta);
+  background: var(--primary);
   color: #fff;
+  border-color: var(--primary);
 }
+
 .btn--cta:hover {
   background: var(--cta-hover);
-  box-shadow: var(--shadow-hover);
+  border-color: var(--cta-hover);
 }
 
 .btn--ghost {
   background: transparent;
   color: var(--text-muted);
 }
+
 .btn--ghost:hover {
-  background: var(--primary-bg);
-  color: var(--primary);
+  background: var(--surface-hover);
+  color: var(--text);
 }
 
 .btn--sm {
-  padding: 0.35rem 0.7rem;
-  font-size: 0.85rem;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.8rem;
+  border-radius: var(--radius-sm);
 }
+
 .btn--md {
-  padding: 0.6rem 1.1rem;
-  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
 }
+
 .btn--lg {
-  padding: 0.8rem 1.5rem;
-  font-size: 1.1rem;
+  padding: 0.7rem 1.4rem;
+  font-size: 1rem;
 }
 
 .btn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }

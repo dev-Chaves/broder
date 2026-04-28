@@ -9,10 +9,10 @@
 }
 
 .builder-drop-zone--over .builder-canvas--empty {
-  border-color: var(--primary);
-  background: var(--primary-bg);
+  border-color: var(--primary-light);
+  background: rgba(220, 38, 38, 0.06);
 }
 
 .builder-drop-zone--over .builder-canvas {
-  border-color: var(--primary);
+  border-color: var(--primary-light);
 }

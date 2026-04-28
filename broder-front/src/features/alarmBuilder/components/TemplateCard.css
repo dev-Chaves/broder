@@ -5,7 +5,7 @@
 
 .template-card--dragging {
   cursor: grabbing;
-  opacity: 0.8;
+  opacity: 0.7;
   z-index: 50;
 }
 
@@ -14,53 +14,52 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 0.4rem;
-  padding: 1.25rem;
-  transition: box-shadow var(--transition), transform var(--transition);
+  gap: 0.35rem;
+  padding: 1.1rem;
+  transition: border-color var(--transition), background var(--transition);
 }
 
 .template-card__inner:hover {
-  box-shadow: var(--shadow-hover);
-  transform: translateY(-2px);
+  border-color: var(--border-strong);
 }
 
 .template-card__icon-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3rem;
-  height: 3rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border-radius: var(--radius);
-  background: var(--primary-bg);
-  color: var(--primary);
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--primary-light);
 }
 
 .template-card__icon {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.35rem;
+  height: 1.35rem;
 }
 
 .template-card__title {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--text);
   margin: 0;
 }
 
 .template-card__desc {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
   line-height: 1.3;
   margin: 0;
 }
 
 .template-card__category {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--primary);
-  background: var(--primary-bg);
-  padding: 0.15rem 0.5rem;
+  letter-spacing: 0.04em;
+  color: var(--primary-light);
+  background: rgba(220, 38, 38, 0.1);
+  padding: 0.1rem 0.45rem;
   border-radius: 999px;
 }

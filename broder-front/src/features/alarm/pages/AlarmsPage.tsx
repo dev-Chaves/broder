@@ -1,73 +1,51 @@
-import { useState, useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import { useAlarms } from '../hooks/useAlarms.ts'
 import { useAlarmMutations } from '../hooks/useAlarmMutations.ts'
 import { AlarmList } from '../components/AlarmList.tsx'
 import './AlarmsPage.css'
 
-type StatusFilter = 'ALL' | 'FIRING' | 'ACTIVE' | 'RESOLVED' | 'ERROR'
-
-const FILTERS: { key: StatusFilter; label: string }[] = [
-  { key: 'ALL', label: 'Todos' },
-  { key: 'FIRING', label: 'Disparados' },
-  { key: 'ACTIVE', label: 'Ativos' },
-  { key: 'RESOLVED', label: 'Resolvidos' },
-  { key: 'ERROR', label: 'Erros' },
-]
-
 export default function AlarmsPage() {
   const { alarms, loading, error, refetch } = useAlarms()
   const { toggleEnabled, remove, error: mutationError } = useAlarmMutations(refetch)
-  const [activeFilter, setActiveFilter] = useState<StatusFilter>('ALL')
 
-  const filteredAlarms = useMemo(() => {
-    let result = activeFilter === 'ALL' ? alarms : alarms.filter((a) => a.status === activeFilter)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refetch()
+    }, 30000)
+    return () => clearInterval(interval)
+  }, [refetch])
 
-    // Ordenar: FIRING primeiro, depois ERROR, ACTIVE, RESOLVED
-    const statusPriority: Record<string, number> = { FIRING: 0, ERROR: 1, ACTIVE: 2, RESOLVED: 3 }
-    result = [...result].sort((a, b) => {
-      const pa = statusPriority[a.status] ?? 99
-      const pb = statusPriority[b.status] ?? 99
-      return pa - pb
-    })
-
-    return result
-  }, [alarms, activeFilter])
-
-  const counts = useMemo(() => {
-    return {
-      ALL: alarms.length,
-      FIRING: alarms.filter((a) => a.status === 'FIRING').length,
-      ACTIVE: alarms.filter((a) => a.status === 'ACTIVE').length,
-      RESOLVED: alarms.filter((a) => a.status === 'RESOLVED').length,
-      ERROR: alarms.filter((a) => a.status === 'ERROR').length,
-    }
+  const firingAlarms = useMemo(() => {
+    return alarms
+      .filter((a) => a.status === 'FIRING')
+      .sort((a, b) => {
+        const sevOrder: Record<string, number> = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 }
+        const sa = sevOrder[a.severity] ?? 99
+        const sb = sevOrder[b.severity] ?? 99
+        if (sa !== sb) return sa - sb
+        return new Date(b.lastFiredAt || b.createdAt).getTime() - new Date(a.lastFiredAt || a.createdAt).getTime()
+      })
   }, [alarms])
+
+  const count = firingAlarms.length
 
   return (
     <div className="alarms-page">
-      <h1 className="alarms-page__title">Seus Alarmes</h1>
-      <p className="alarms-page__subtitle">Monitore o status dos seus alarmes em tempo real</p>
+      <div className="alarms-page__header">
+        <div>
+          <h1 className="alarms-page__title">Alarmes</h1>
+          <p className="alarms-page__subtitle">
+            {count > 0
+              ? `${count} alarme${count > 1 ? 's' : ''} disparado${count > 1 ? 's' : ''}`
+              : 'Nenhum alarme disparado'}
+          </p>
+        </div>
+      </div>
 
       {mutationError && <div className="alarms-page__error" role="alert">{mutationError}</div>}
 
-      <div className="alarms-filter" role="tablist" aria-label="Filtrar alarmes por status">
-        {FILTERS.map((f) => (
-          <button
-            key={f.key}
-            type="button"
-            role="tab"
-            aria-selected={activeFilter === f.key}
-            className={`alarms-filter__chip ${activeFilter === f.key ? 'alarms-filter__chip--active' : ''}`}
-            onClick={() => setActiveFilter(f.key)}
-          >
-            {f.label}
-            <span className="alarms-filter__count">{counts[f.key]}</span>
-          </button>
-        ))}
-      </div>
-
       <AlarmList
-        alarms={filteredAlarms}
+        alarms={firingAlarms}
         loading={loading}
         error={error}
         onToggle={toggleEnabled}

@@ -1,0 +1,62 @@
+services:
+  ref:
+    build:
+      context: ./api-prometheus
+      dockerfile: Dockerfile
+    container_name: broder-ref
+    ports:
+      - "8181:8181"
+    restart: unless-stopped
+    networks:
+      - broder-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: broder-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./api-prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    restart: unless-stopped
+    networks:
+      - broder-network
+    depends_on:
+      - ref
+
+  broder:
+    build:
+      context: ./broder
+      dockerfile: Dockerfile
+    container_name: broder-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - PROMETHEUS_URL=http://prometheus:9090
+      - CORS_ORIGINS=http://localhost:3000
+    volumes:
+      - broder-data:/app/data
+    restart: unless-stopped
+    networks:
+      - broder-network
+    depends_on:
+      - prometheus
+
+  frontend:
+    build:
+      context: ./broder-front
+      dockerfile: Dockerfile
+    container_name: broder-frontend
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    networks:
+      - broder-network
+    depends_on:
+      - broder
+
+volumes:
+  broder-data:
+
+networks:
+  broder-network:
+    driver: bridge
