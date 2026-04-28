@@ -10,6 +10,7 @@ public record AlarmUpdateDTO(
         String threshold,
         Integer evaluationIntervalSeconds,
         Boolean enabled,
-        String severity
+        String severity,
+        String webhookUrl
 ) {
 }

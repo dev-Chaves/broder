@@ -18,6 +18,7 @@ public record AlarmResponseDTO(
         LocalDateTime lastEvaluatedAt,
         LocalDateTime lastFiredAt,
         Long usages,
+        String webhookUrl,
         LocalDateTime createdAt
 ) {
 }

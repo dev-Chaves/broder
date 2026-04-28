@@ -44,6 +44,8 @@ public class Alarm {
 
     private Long usages;
 
+    private String webhookUrl;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public Alarm() {
@@ -141,6 +143,10 @@ public class Alarm {
         this.lastFiredAt = lastFiredAt;
     }
 
+    public void setWebhookUrl(String webhookUrl) {
+        this.webhookUrl = webhookUrl;
+    }
+
     // --- Accessors ---
 
     public Long getId() {
@@ -193,6 +199,10 @@ public class Alarm {
 
     public Long getUsages() {
         return usages;
+    }
+
+    public String getWebhookUrl() {
+        return webhookUrl;
     }
 
     public LocalDateTime getCreatedAt() {

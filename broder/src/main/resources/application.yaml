@@ -23,3 +23,7 @@ quarkus:
     cors:
       ~: true
       origins: ${CORS_ORIGINS:http://localhost:3000}
+
+broder:
+  webhook:
+    timeout-seconds: 5

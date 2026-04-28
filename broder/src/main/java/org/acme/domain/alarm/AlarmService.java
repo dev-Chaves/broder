@@ -42,6 +42,9 @@ public class AlarmService {
         if (dto.templateId() != null) {
             alarm.setTemplateId(dto.templateId());
         }
+        if (dto.webhookUrl() != null && !dto.webhookUrl().isBlank()) {
+            alarm.setWebhookUrl(dto.webhookUrl());
+        }
         alarmRepository.persist(alarm);
 
         LOG.infof("[SERVICE] Alarm created successfully: id=%d, name='%s'", alarm.getId(), alarm.getName());
@@ -103,6 +106,9 @@ public class AlarmService {
         if (dto.evaluationIntervalSeconds() != null) alarm.setEvaluationIntervalSeconds(dto.evaluationIntervalSeconds());
         if (dto.enabled() != null) alarm.setEnabled(dto.enabled());
         if (dto.severity() != null) alarm.setSeverity(AlarmSeverity.valueOf(dto.severity()));
+        if (dto.webhookUrl() != null) {
+            alarm.setWebhookUrl(dto.webhookUrl().isBlank() ? null : dto.webhookUrl());
+        }
 
         return toResponseDTO(alarm);
     }
@@ -218,6 +224,7 @@ public class AlarmService {
                 alarm.getLastEvaluatedAt(),
                 alarm.getLastFiredAt(),
                 alarm.getUsages(),
+                alarm.getWebhookUrl(),
                 alarm.getCreatedAt()
         );
     }

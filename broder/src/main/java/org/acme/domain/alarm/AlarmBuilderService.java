@@ -137,7 +137,8 @@ public class AlarmBuilderService {
                 dto.evaluationIntervalSeconds(),
                 preview.severity(),
                 preview.category(),
-                dto.templateId()
+                dto.templateId(),
+                null
         );
 
         var saved = alarmService.save(alarmRequest);

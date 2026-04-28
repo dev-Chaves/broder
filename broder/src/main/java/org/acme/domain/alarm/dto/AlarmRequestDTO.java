@@ -16,6 +16,7 @@ public record AlarmRequestDTO(
         Integer evaluationIntervalSeconds,
         String severity,
         String category,
-        String templateId
+        String templateId,
+        String webhookUrl
 ) {
 }
