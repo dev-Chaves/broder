@@ -89,37 +89,7 @@ cd api-prometheus
 docker compose up -d
 ```
 
----
-
-## Production (PostgreSQL)
-
-By default, Broder uses SQLite for development. For production, use the `prod` profile with PostgreSQL:
-
-```bash
-# Start PostgreSQL
-docker run -d \
-  --name broder-postgres \
-  -e POSTGRES_USER=broder \
-  -e POSTGRES_PASSWORD=broder \
-  -e POSTGRES_DB=broder \
-  -p 5432:5432 \
-  postgres:16-alpine
-
-# Run with prod profile
-cd broder
-./mvnw quarkus:dev -Dquarkus.profile=prod
-```
-
-Or via environment variables:
-```bash
-export QUARKUS_PROFILE=prod
-export POSTGRES_HOST=localhost
-export POSTGRES_PORT=5432
-export POSTGRES_DB=broder
-export POSTGRES_USER=broder
-export POSTGRES_PASSWORD=broder
-./mvnw quarkus:dev
-```
+> **Database:** Broder uses SQLite in all environments (dev and production) to stay lightweight and zero-config. The database file is persisted at `./data/data.db` and mounted as a Docker volume in the compose stack.
 
 ---
 

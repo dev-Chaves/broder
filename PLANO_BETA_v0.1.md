@@ -8,7 +8,7 @@
 
 **Veredito: 🟢 PRONTO PARA BETA — 8 de 8 bloqueadores críticos resolvidos. Todos os Should-Have concluídos exceto screenshots reais.**
 
-Base sólida, testes passando (55 backend + 20 frontend), observabilidade completa (health checks + métricas Prometheus), notificações via webhook ativas, deploy via Docker Compose funcional, profile de produção com PostgreSQL configurado. Único item remanescente são screenshots reais no README (requer execução da stack completa).
+Base sólida, testes passando (55 backend + 20 frontend), observabilidade completa (health checks + métricas Prometheus), notificações via webhook ativas, deploy via Docker Compose funcional. SQLite é usado em todos os ambientes por design (zero-config, leve). Único item remanescente são screenshots reais no README (requer execução da stack completa).
 
 ---
 
@@ -149,18 +149,21 @@ Base sólida, testes passando (55 backend + 20 frontend), observabilidade comple
 
 ---
 
-### Story 3.3 — Profile de Produção com PostgreSQL
+### Story 3.3 — SQLite como Banco Padrão (Decisão de Arquitetura)
 
-**Como** operador que quer rodar Broder em produção  
-**Quero** um profile `prod` configurado para PostgreSQL  
-**Para que** eu não dependa do SQLite file-based
+**Decisão:** Broder usa SQLite em **todos** os ambientes (dev e produção) para manter a ferramenta leve, zero-config e fácil de operar.
+
+**Rationale:**
+- O foco do Broder é ser uma alternativa *leve* a stacks complexas como Grafana + Alertmanager.
+- SQLite é suficiente para o volume de dados de alarmes e histórico (tipicamente milhares de linhas, não milhões).
+- Elimina a necessidade de gerenciar um serviço de banco separado em produção.
+- O arquivo `./data/data.db` é montado como volume Docker no `docker-compose.yml` para persistência.
 
 **Critérios de Aceite:**
-- [x] `application-prod.yaml` criado com configuração PostgreSQL
-- [x] `application.yaml` continua com SQLite (modo dev)
-- [x] Profile ativável via `quarkus.profile=prod` ou env var
-- [x] Instruções no README explicando como rodar com PostgreSQL
-- [ ] (Opcional) Docker Compose inclui serviço PostgreSQL com profile `prod`
+- [x] `application.yaml` usa SQLite (`db-kind: sqlite`)
+- [x] Banco persistido via volume no Docker Compose
+- [x] Documentado no README que SQLite é usado em todos os ambientes
+- [ ] (Opcional) Backup automatizado do arquivo `.db` documentado
 
 ---
 
@@ -257,7 +260,7 @@ Base sólida, testes passando (55 backend + 20 frontend), observabilidade comple
 | 7 | Health Checks | 3 | ✅ CRÍTICO | **Concluído** |
 | 8 | Webhook Genérico | 4 | ✅ CRÍTICO | **Concluído** |
 | 9 | Métricas Micrometer | 3 | 🟡 Should Have | **Concluído** |
-| 10 | Profile PostgreSQL | 3 | 🟡 Should Have | **Concluído** |
+| 10 | SQLite em todos os ambientes | 3 | 🟡 Should Have | **Concluído** |
 | 11 | Confirmação de Deleção | 5 | 🟡 Should Have | **Concluído** |
 | 12 | Error Boundaries | 5 | 🟡 Should Have | **Concluído** |
 | 13 | Idioma Consistente | 5 | 🟡 Should Have | **Concluído** |
@@ -269,7 +272,7 @@ Base sólida, testes passando (55 backend + 20 frontend), observabilidade comple
 
 1. **Idioma:** O público-alvo do LinkedIn é global. Recomendo inglês para UI pública, mantendo documentação interna (AGENTS.md) em português se preferir.
 2. **Webhook:** Definir se será configuração **por alarme** (cada um tem seu webhook) ou **global** (um webhook para todo o sistema). Recomendo **por alarme** para flexibilidade.
-3. **Banco de dados:** O SQLite é aceitável para o beta desde que documentado como "dev only". PostgreSQL é should-have, não blocker.
+3. **Banco de dados:** SQLite é usado em todos os ambientes (dev e produção) como decisão de arquitetura para manter o Broder leve e zero-config. Não há planos de suportar PostgreSQL nativamente.
 4. **Prazo estimado:** 3–5 dias de trabalho focado para resolver todos os bloqueadores críticos.
 
 ---
