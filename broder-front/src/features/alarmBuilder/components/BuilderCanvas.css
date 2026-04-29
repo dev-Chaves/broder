@@ -89,10 +89,9 @@
 }
 
 .filter-field__name {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  text-transform: capitalize;
-  color: var(--text-muted);
+  color: var(--text);
 }
 
 .comparison-group,

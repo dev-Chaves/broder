@@ -51,7 +51,10 @@ export function TemplateCard({ template, onClick }: TemplateCardProps) {
         </div>
         <h3 className="template-card__title">{template.name}</h3>
         <p className="template-card__desc">{template.description}</p>
-        <span className="template-card__category">{template.category}</span>
+        <div className="template-card__meta">
+          <span className="template-card__category">{template.category}</span>
+          <span className="template-card__unit">{template.unit}</span>
+        </div>
       </Card>
     </div>
   )

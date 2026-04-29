@@ -1,6 +1,7 @@
 package org.acme.domain.alarm;
 
 import org.acme.domain.alarm.dto.AlarmTemplate;
+import org.acme.domain.alarm.dto.FilterInfoDTO;
 
 import java.util.List;
 
@@ -15,7 +16,10 @@ public class AlarmTemplateRegistry {
                     "HIGH",
                     ">",
                     "0.8",
-                    List.of("area", "id"),
+                    List.of(
+                            new FilterInfoDTO("area", "Memory area", "heap", "Part of JVM memory: heap (objects) or nonheap (code/metaspace)"),
+                            new FilterInfoDTO("id", "Memory pool", "G1 Old Gen", "Specific region inside the memory area")
+                    ),
                     "ratio (0-1)",
                     "process_cpu_usage"
             ),
@@ -27,7 +31,10 @@ public class AlarmTemplateRegistry {
                     "HIGH",
                     ">",
                     "0.85",
-                    List.of("area", "id"),
+                    List.of(
+                            new FilterInfoDTO("area", "Memory area", "heap", "Part of JVM memory: heap (objects) or nonheap (code/metaspace)"),
+                            new FilterInfoDTO("id", "Memory pool", "G1 Old Gen", "Specific region inside the memory area")
+                    ),
                     "ratio (0-1)",
                     "(jvm_memory_used_bytes{area=\"heap\"} / jvm_memory_max_bytes{area=\"heap\"})"
             ),
@@ -39,7 +46,12 @@ public class AlarmTemplateRegistry {
                     "CRITICAL",
                     ">",
                     "0.05",
-                    List.of("uri", "method", "status", "outcome"),
+                    List.of(
+                            new FilterInfoDTO("uri", "Endpoint path", "/api/users", "URL path of the request you want to monitor. Use /** to match all endpoints."),
+                            new FilterInfoDTO("method", "HTTP method", "GET, POST", "The HTTP verb. Examples: GET, POST, PUT, DELETE."),
+                            new FilterInfoDTO("status", "HTTP status code", "200, 500", "The numeric response code. Examples: 200 (OK), 404 (Not Found), 500 (Server Error)."),
+                            new FilterInfoDTO("outcome", "Request result", "SERVER_ERROR", "How the request ended: SUCCESS (2xx), CLIENT_ERROR (4xx), SERVER_ERROR (5xx).")
+                    ),
                     "errors/sec",
                     "rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[1m])"
             ),
@@ -51,7 +63,12 @@ public class AlarmTemplateRegistry {
                     "MEDIUM",
                     ">",
                     "0.1",
-                    List.of("uri", "method", "status", "outcome"),
+                    List.of(
+                            new FilterInfoDTO("uri", "Endpoint path", "/api/users", "URL path of the request you want to monitor. Use /** to match all endpoints."),
+                            new FilterInfoDTO("method", "HTTP method", "GET, POST", "The HTTP verb. Examples: GET, POST, PUT, DELETE."),
+                            new FilterInfoDTO("status", "HTTP status code", "200, 500", "The numeric response code. Examples: 200 (OK), 404 (Not Found), 500 (Server Error)."),
+                            new FilterInfoDTO("outcome", "Request result", "CLIENT_ERROR", "How the request ended: SUCCESS (2xx), CLIENT_ERROR (4xx), SERVER_ERROR (5xx).")
+                    ),
                     "errors/sec",
                     "rate(http_server_requests_seconds_count{outcome=\"CLIENT_ERROR\"}[1m])"
             ),
@@ -63,7 +80,12 @@ public class AlarmTemplateRegistry {
                     "LOW",
                     ">",
                     "0.5",
-                    List.of("uri", "method", "status", "outcome"),
+                    List.of(
+                            new FilterInfoDTO("uri", "Endpoint path", "/api/users", "URL path of the request you want to monitor. Use /** to match all endpoints."),
+                            new FilterInfoDTO("method", "HTTP method", "GET, POST", "The HTTP verb. Examples: GET, POST, PUT, DELETE."),
+                            new FilterInfoDTO("status", "HTTP status code", "200, 500", "The numeric response code. Examples: 200 (OK), 404 (Not Found), 500 (Server Error)."),
+                            new FilterInfoDTO("outcome", "Request result", "SUCCESS", "How the request ended: SUCCESS (2xx), CLIENT_ERROR (4xx), SERVER_ERROR (5xx).")
+                    ),
                     "seconds",
                     "histogram_quantile(0.50, rate(http_server_requests_seconds_bucket[1m]))"
             ),
@@ -75,7 +97,12 @@ public class AlarmTemplateRegistry {
                     "MEDIUM",
                     ">",
                     "1.0",
-                    List.of("uri", "method", "status", "outcome"),
+                    List.of(
+                            new FilterInfoDTO("uri", "Endpoint path", "/api/users", "URL path of the request you want to monitor. Use /** to match all endpoints."),
+                            new FilterInfoDTO("method", "HTTP method", "GET, POST", "The HTTP verb. Examples: GET, POST, PUT, DELETE."),
+                            new FilterInfoDTO("status", "HTTP status code", "200, 500", "The numeric response code. Examples: 200 (OK), 404 (Not Found), 500 (Server Error)."),
+                            new FilterInfoDTO("outcome", "Request result", "SUCCESS", "How the request ended: SUCCESS (2xx), CLIENT_ERROR (4xx), SERVER_ERROR (5xx).")
+                    ),
                     "seconds",
                     "histogram_quantile(0.90, rate(http_server_requests_seconds_bucket[1m]))"
             ),
@@ -87,7 +114,12 @@ public class AlarmTemplateRegistry {
                     "HIGH",
                     ">",
                     "2.0",
-                    List.of("uri", "method", "status", "outcome"),
+                    List.of(
+                            new FilterInfoDTO("uri", "Endpoint path", "/api/users", "URL path of the request you want to monitor. Use /** to match all endpoints."),
+                            new FilterInfoDTO("method", "HTTP method", "GET, POST", "The HTTP verb. Examples: GET, POST, PUT, DELETE."),
+                            new FilterInfoDTO("status", "HTTP status code", "200, 500", "The numeric response code. Examples: 200 (OK), 404 (Not Found), 500 (Server Error)."),
+                            new FilterInfoDTO("outcome", "Request result", "SUCCESS", "How the request ended: SUCCESS (2xx), CLIENT_ERROR (4xx), SERVER_ERROR (5xx).")
+                    ),
                     "seconds",
                     "histogram_quantile(0.99, rate(http_server_requests_seconds_bucket[1m]))"
             ),
@@ -99,7 +131,12 @@ public class AlarmTemplateRegistry {
                     "MEDIUM",
                     ">",
                     "1.0",
-                    List.of("uri", "method", "status", "outcome"),
+                    List.of(
+                            new FilterInfoDTO("uri", "Endpoint path", "/api/users", "URL path of the request you want to monitor. Use /** to match all endpoints."),
+                            new FilterInfoDTO("method", "HTTP method", "GET, POST", "The HTTP verb. Examples: GET, POST, PUT, DELETE."),
+                            new FilterInfoDTO("status", "HTTP status code", "200, 500", "The numeric response code. Examples: 200 (OK), 404 (Not Found), 500 (Server Error)."),
+                            new FilterInfoDTO("outcome", "Request result", "SUCCESS", "How the request ended: SUCCESS (2xx), CLIENT_ERROR (4xx), SERVER_ERROR (5xx).")
+                    ),
                     "seconds",
                     "rate(http_server_requests_seconds_sum[1m]) / rate(http_server_requests_seconds_count[1m])"
             ),
@@ -111,7 +148,12 @@ public class AlarmTemplateRegistry {
                     "LOW",
                     ">",
                     "100",
-                    List.of("uri", "method", "status", "outcome"),
+                    List.of(
+                            new FilterInfoDTO("uri", "Endpoint path", "/api/users", "URL path of the request you want to monitor. Use /** to match all endpoints."),
+                            new FilterInfoDTO("method", "HTTP method", "GET, POST", "The HTTP verb. Examples: GET, POST, PUT, DELETE."),
+                            new FilterInfoDTO("status", "HTTP status code", "200, 500", "The numeric response code. Examples: 200 (OK), 404 (Not Found), 500 (Server Error)."),
+                            new FilterInfoDTO("outcome", "Request result", "SUCCESS", "How the request ended: SUCCESS (2xx), CLIENT_ERROR (4xx), SERVER_ERROR (5xx).")
+                    ),
                     "requests/sec",
                     "rate(http_server_requests_seconds_count[1m])"
             ),
@@ -123,7 +165,10 @@ public class AlarmTemplateRegistry {
                     "HIGH",
                     ">",
                     "0.5",
-                    List.of("gc", "action"),
+                    List.of(
+                            new FilterInfoDTO("gc", "Garbage collector", "G1 Young Generation", "Name of the GC algorithm collecting memory"),
+                            new FilterInfoDTO("action", "GC action type", "end of minor GC", "What the GC did: minor GC (young), major GC (old), etc.")
+                    ),
                     "seconds",
                     "histogram_quantile(0.95, rate(jvm_gc_pause_seconds_bucket[1m]))"
             ),
@@ -135,7 +180,10 @@ public class AlarmTemplateRegistry {
                     "HIGH",
                     ">",
                     "15",
-                    List.of("pool", "id"),
+                    List.of(
+                            new FilterInfoDTO("pool", "Database pool", "default", "Name of the database connection pool"),
+                            new FilterInfoDTO("id", "Connection ID", "hikari-pool-1", "Identifier of the connection pool instance")
+                    ),
                     "connections",
                     "jdbc_connections_active"
             ),
@@ -147,7 +195,9 @@ public class AlarmTemplateRegistry {
                     "MEDIUM",
                     ">",
                     "500",
-                    List.of("state"),
+                    List.of(
+                            new FilterInfoDTO("state", "Thread state", "RUNNABLE", "What the thread is doing: RUNNABLE, BLOCKED, WAITING, etc.")
+                    ),
                     "threads",
                     "jvm_threads_live"
             )

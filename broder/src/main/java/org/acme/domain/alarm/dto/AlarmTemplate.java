@@ -10,7 +10,7 @@ public record AlarmTemplate(
         String defaultSeverity,
         String defaultComparison,
         String defaultThreshold,
-        List<String> supportedFilters,
+        List<FilterInfoDTO> filterInfo,
         String unit,
         String queryTemplate
 ) {

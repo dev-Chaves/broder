@@ -53,6 +53,13 @@
   margin: 0;
 }
 
+.template-card__meta {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 .template-card__category {
   font-size: 0.68rem;
   font-weight: 700;
@@ -60,6 +67,15 @@
   letter-spacing: 0.04em;
   color: var(--primary-light);
   background: rgba(220, 38, 38, 0.1);
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+}
+
+.template-card__unit {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--surface-hover);
   padding: 0.1rem 0.45rem;
   border-radius: 999px;
 }

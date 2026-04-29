@@ -1,3 +1,10 @@
+export interface FilterInfo {
+  key: string
+  label: string
+  placeholder: string
+  description: string
+}
+
 export interface AlarmTemplate {
   id: string
   name: string
@@ -6,7 +13,7 @@ export interface AlarmTemplate {
   defaultSeverity: string
   defaultComparison: string
   defaultThreshold: string
-  supportedFilters: string[]
+  filterInfo: FilterInfo[]
   unit: string
   queryTemplate: string
 }

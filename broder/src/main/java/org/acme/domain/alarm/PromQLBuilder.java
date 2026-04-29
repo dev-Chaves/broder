@@ -4,6 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import org.acme.domain.alarm.dto.AlarmTemplate;
 import org.jboss.logging.Logger;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,10 @@ public class PromQLBuilder {
 
         AlarmTemplate template = AlarmTemplateRegistry.findById(templateId);
         String query = template.queryTemplate();
+
+        List<String> supportedKeys = template.filterInfo().stream()
+                .map(org.acme.domain.alarm.dto.FilterInfoDTO::key)
+                .toList();
 
         if (filters == null || filters.isEmpty()) {
             throw new IllegalArgumentException("filters cannot be empty");

@@ -108,20 +108,20 @@ export function BuilderCanvas({ template, onCreated }: BuilderCanvasProps) {
           />
         </label>
 
-        {template.supportedFilters.length > 0 && (
+        {template.filterInfo.length > 0 && (
           <div className="field">
             <span className="field__label">Filters</span>
             <div className="filters-grid">
-              {template.supportedFilters.map((f) => (
-                <label key={f} className="filter-field">
-                  <span className="filter-field__name">{f}</span>
+              {template.filterInfo.map((info) => (
+                <label key={info.key} className="filter-field">
+                  <span className="filter-field__name">{info.label}</span>
                   <input
                     className="field__input"
-                    value={filters[f] || ''}
+                    value={filters[info.key] || ''}
                     onChange={(e) =>
-                      setFilters((prev) => ({ ...prev, [f]: e.target.value }))
+                      setFilters((prev) => ({ ...prev, [info.key]: e.target.value }))
                     }
-                    placeholder={`e.g. value`}
+                    placeholder={info.placeholder}
                   />
                 </label>
               ))}
