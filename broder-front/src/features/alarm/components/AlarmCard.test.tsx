@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { AlarmCard } from './AlarmCard.tsx'
-import type { Alarm } from '../../api/alarmTypes.ts'
+import type { Alarm } from '../api/alarmTypes.ts'
 
 // Mock formatDateTime to return predictable strings
 vi.mock('../../../shared/utils/formatters.ts', () => ({
