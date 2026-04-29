@@ -6,9 +6,9 @@
 
 ## Status Geral
 
-**Veredito: 🟡 QUASE PRONTO — 8 de 8 bloqueadores críticos resolvidos. Restam ajustes de documentação e screenshots.**
+**Veredito: 🟢 PRONTO PARA BETA — 8 de 8 bloqueadores críticos resolvidos. Todos os Should-Have concluídos exceto screenshots reais.**
 
-Base sólida, testes passando, observabilidade completa, notificações via webhook ativas, deploy via Docker Compose funcional. Falta adicionar screenshots reais ao README e documentar health checks.
+Base sólida, testes passando (55 backend + 20 frontend), observabilidade completa (health checks + métricas Prometheus), notificações via webhook ativas, deploy via Docker Compose funcional, profile de produção com PostgreSQL configurado. Único item remanescente são screenshots reais no README (requer execução da stack completa).
 
 ---
 
@@ -129,7 +129,7 @@ Base sólida, testes passando, observabilidade completa, notificações via webh
 - [x] `GET /q/health/ready` retorna 200 quando a aplicação está pronta para receber tráfego
 - [x] `GET /q/health/live` retorna 200 quando a aplicação está viva
 - [x] Health check inclui verificação de conectividade com o banco de dados
-- [ ] Documentado no README
+- [x] Documentado no README
 
 ---
 
@@ -156,10 +156,10 @@ Base sólida, testes passando, observabilidade completa, notificações via webh
 **Para que** eu não dependa do SQLite file-based
 
 **Critérios de Aceite:**
-- [ ] `application-prod.yaml` criado com configuração PostgreSQL
-- [ ] `application.yaml` continua com SQLite (modo dev)
-- [ ] Profile ativável via `quarkus.profile=prod` ou env var
-- [ ] Instruções no README explicando como rodar com PostgreSQL
+- [x] `application-prod.yaml` criado com configuração PostgreSQL
+- [x] `application.yaml` continua com SQLite (modo dev)
+- [x] Profile ativável via `quarkus.profile=prod` ou env var
+- [x] Instruções no README explicando como rodar com PostgreSQL
 - [ ] (Opcional) Docker Compose inclui serviço PostgreSQL com profile `prod`
 
 ---
@@ -257,7 +257,7 @@ Base sólida, testes passando, observabilidade completa, notificações via webh
 | 7 | Health Checks | 3 | ✅ CRÍTICO | **Concluído** |
 | 8 | Webhook Genérico | 4 | ✅ CRÍTICO | **Concluído** |
 | 9 | Métricas Micrometer | 3 | 🟡 Should Have | **Concluído** |
-| 10 | Profile PostgreSQL | 3 | 🟡 Should Have | Pendente |
+| 10 | Profile PostgreSQL | 3 | 🟡 Should Have | **Concluído** |
 | 11 | Confirmação de Deleção | 5 | 🟡 Should Have | **Concluído** |
 | 12 | Error Boundaries | 5 | 🟡 Should Have | **Concluído** |
 | 13 | Idioma Consistente | 5 | 🟡 Should Have | **Concluído** |

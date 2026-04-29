@@ -91,6 +91,38 @@ docker compose up -d
 
 ---
 
+## Production (PostgreSQL)
+
+By default, Broder uses SQLite for development. For production, use the `prod` profile with PostgreSQL:
+
+```bash
+# Start PostgreSQL
+docker run -d \
+  --name broder-postgres \
+  -e POSTGRES_USER=broder \
+  -e POSTGRES_PASSWORD=broder \
+  -e POSTGRES_DB=broder \
+  -p 5432:5432 \
+  postgres:16-alpine
+
+# Run with prod profile
+cd broder
+./mvnw quarkus:dev -Dquarkus.profile=prod
+```
+
+Or via environment variables:
+```bash
+export QUARKUS_PROFILE=prod
+export POSTGRES_HOST=localhost
+export POSTGRES_PORT=5432
+export POSTGRES_DB=broder
+export POSTGRES_USER=broder
+export POSTGRES_PASSWORD=broder
+./mvnw quarkus:dev
+```
+
+---
+
 ## Architecture
 
 ```
@@ -98,13 +130,81 @@ docker compose up -d
 │   React UI      │◄────►│  Broder Backend │◄────►│   Prometheus    │
 │  (Port 3000)    │      │   (Port 8080)   │      │   (Port 9090)   │
 └─────────────────┘      └─────────────────┘      └─────────────────┘
-                                │
-                                ▼
-                         ┌─────────────────┐
-                         │  SQLite (file)  │
-                         │  ./data/data.db │
-                         └─────────────────┘
+                                │                           │
+                                ▼                           ▼
+                         ┌─────────────────┐      ┌─────────────────┐
+                         │  SQLite (file)  │      │ Webhook targets │
+                         │  ./data/data.db │      │ (Slack, Pager,  │
+                         └─────────────────┘      │ Discord, etc.)  │
+                                                  └─────────────────┘
 ```
+
+---
+
+## Observability
+
+Broder exposes production-ready health checks and Prometheus-compatible metrics out of the box.
+
+### Health Checks
+
+| Endpoint | Purpose |
+|----------|---------|
+| `GET /q/health` | Overall health status |
+| `GET /q/health/live` | Liveness probe (Kubernetes) |
+| `GET /q/health/ready` | Readiness probe (Kubernetes) |
+
+The readiness check includes a database connectivity verification. All endpoints return `200 UP` when healthy.
+
+### Metrics
+
+Prometheus metrics are available at:
+
+```
+http://localhost:8080/q/metrics
+```
+
+Included metrics:
+- **JVM metrics** — memory, GC, threads (Micrometer default)
+- **HTTP metrics** — request duration and count per endpoint
+- **`broder_alarms_evaluated_total`** — Counter of alarm evaluations
+- **`broder_alarms_firing`** — Gauge of currently firing alarms
+- **`broder_scheduler_duration_seconds`** — Histogram of scheduler cycle duration
+
+---
+
+## Webhook Notifications
+
+Each alarm can optionally send a `POST` webhook when it transitions to `FIRING`, `RESOLVED`, or `ERROR`.
+
+Set the `webhookUrl` field when creating or updating an alarm. If no URL is configured, the alarm logs only (no webhook sent).
+
+### Payload Format
+
+```json
+{
+  "alarmId": 1,
+  "alarmName": "CPU Usage High",
+  "status": "FIRING",
+  "severity": "HIGH",
+  "currentValue": 0.92,
+  "message": "Alarm 'CPU Usage High' is firing. Current value: 0.92 > threshold: 0.8",
+  "timestamp": "2026-04-28T16:45:00"
+}
+```
+
+### Slack Integration
+
+Create an [Incoming Webhook](https://api.slack.com/messaging/webhooks) in Slack and paste the URL into the alarm's `webhookUrl` field. The payload includes a `message` field compatible with Slack's `text` parameter.
+
+Configuration:
+```yaml
+# application.yaml
+broder:
+  webhook:
+    timeout-seconds: 5   # default
+```
+
+Webhook failures are logged but never block alarm evaluation or history recording.
 
 ---
 
