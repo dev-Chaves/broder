@@ -2,6 +2,7 @@ package org.acme.domain.alarm;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import org.acme.domain.alarm.enums.AlarmStatus;
 import org.acme.domain.history.History;
 import org.acme.domain.history.HistoryService;
 import org.jboss.logging.Logger;
@@ -40,7 +41,10 @@ public class AlarmEvaluationOrchestrator {
 
         if (newStatus == AlarmStatus.FIRING && !wasFiring) {
             notificationService.notifyFiring(alarm, currentValue);
-        } else if (wasFiring && newStatus == AlarmStatus.RESOLVED) {
+        }
+
+        if (wasFiring && newStatus == AlarmStatus.RESOLVED) {
+            LOG.debugf("[ORCHESTRATOR] Alarm id=%d transitioned from FIRING to RESOLVED", alarm.getId());
             notificationService.notifyResolved(alarm, currentValue);
         }
     }
@@ -49,7 +53,9 @@ public class AlarmEvaluationOrchestrator {
     public void processError(Alarm alarm, Throwable error, LocalDateTime evaluatedAt) {
         LOG.warnf("[ORCHESTRATOR] Processing error for alarm id=%d: %s", alarm.getId(), error.getMessage());
 
-        boolean wasFiring = alarm.wasFiring();
+        if (alarm.wasFiring()) {
+            LOG.debugf("[ORCHESTRATOR] Alarm id=%d was FIRING before entering ERROR state", alarm.getId());
+        }
         alarmService.recordEvaluation(alarm.getId(), AlarmStatus.ERROR, evaluatedAt);
 
         try {

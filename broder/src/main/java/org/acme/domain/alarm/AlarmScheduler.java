@@ -6,6 +6,7 @@ import io.micrometer.core.instrument.Timer;
 import io.quarkus.scheduler.Scheduled;
 import io.smallrye.common.annotation.Blocking;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.acme.domain.alarm.enums.AlarmStatus;
 import org.jboss.logging.Logger;
 
 import java.time.Duration;
@@ -18,6 +19,7 @@ public class AlarmScheduler {
 
     private static final Logger LOG = Logger.getLogger(AlarmScheduler.class);
     private static final Duration EVALUATION_TIMEOUT = Duration.ofSeconds(10);
+
 
     private final AlarmService alarmService;
     private final AlarmEvaluator alarmEvaluator;
@@ -47,7 +49,7 @@ public class AlarmScheduler {
                 .register(meterRegistry);
     }
 
-    @Scheduled(every = "20s")
+    @Scheduled(every = "${broder.scheduler.interval:20s}")
     @Blocking
     void run() {
         long cycleStart = System.currentTimeMillis();
@@ -97,7 +99,9 @@ public class AlarmScheduler {
 
                 if (newStatus == AlarmStatus.FIRING && previousStatus != AlarmStatus.FIRING) {
                     triggeredCount++;
-                } else if (previousStatus == AlarmStatus.FIRING && newStatus == AlarmStatus.RESOLVED) {
+                }
+
+                if (previousStatus == AlarmStatus.FIRING && newStatus == AlarmStatus.RESOLVED) {
                     resolvedCount++;
                 }
 

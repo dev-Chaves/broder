@@ -25,5 +25,7 @@ quarkus:
       origins: ${CORS_ORIGINS:http://localhost:3000}
 
 broder:
+  scheduler:
+    interval: 20s
   webhook:
     timeout-seconds: 5

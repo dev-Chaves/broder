@@ -5,7 +5,7 @@ import jakarta.transaction.Transactional;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.acme.domain.alarm.Alarm;
 import org.acme.domain.alarm.AlarmRepository;
-import org.acme.domain.alarm.AlarmStatus;
+import org.acme.domain.alarm.enums.AlarmStatus;
 import org.acme.domain.history.dto.HistoryRequestDTO;
 import org.acme.domain.history.dto.HistoryResponseDTO;
 import org.acme.domain.shared.api.PageResponse;

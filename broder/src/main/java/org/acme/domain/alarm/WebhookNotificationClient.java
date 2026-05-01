@@ -53,10 +53,13 @@ public class WebhookNotificationClient {
 
             if (response.statusCode() >= 200 && response.statusCode() < 300) {
                 LOG.infof("[WEBHOOK] Sent successfully to %s | status=%d", webhookUrl, response.statusCode());
-            } else {
+            }
+
+            if (response.statusCode() < 200 || response.statusCode() > 299) {
                 LOG.warnf("[WEBHOOK] Received non-2xx response from %s | status=%d | body=%s",
                         webhookUrl, response.statusCode(), response.body());
             }
+
         } catch (Exception e) {
             LOG.warnf(e, "[WEBHOOK] Failed to send notification to %s", webhookUrl);
         }

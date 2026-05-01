@@ -1,5 +1,6 @@
 package org.acme.domain.alarm;
 
+import org.acme.domain.alarm.enums.ComparisonOperator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

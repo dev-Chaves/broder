@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import org.acme.domain.alarm.enums.ComparisonOperator;
 
 @Embeddable
 public class AlarmCondition {
@@ -22,7 +23,7 @@ public class AlarmCondition {
         // JPA
     }
 
-    public AlarmCondition(String query, ComparisonOperator operator, String threshold) {
+    private AlarmCondition(String query, ComparisonOperator operator, String threshold) {
         if (query == null || query.isBlank()) {
             throw new IllegalArgumentException("Query cannot be blank");
         }
@@ -40,6 +41,40 @@ public class AlarmCondition {
         this.query = query.trim();
         this.operator = operator;
         this.threshold = threshold;
+    }
+
+    // --- Builder ---
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String query;
+        private ComparisonOperator operator;
+        private String threshold;
+
+        private Builder() {
+        }
+
+        public Builder query(String query) {
+            this.query = query;
+            return this;
+        }
+
+        public Builder operator(ComparisonOperator operator) {
+            this.operator = operator;
+            return this;
+        }
+
+        public Builder threshold(String threshold) {
+            this.threshold = threshold;
+            return this;
+        }
+
+        public AlarmCondition build() {
+            return new AlarmCondition(query, operator, threshold);
+        }
     }
 
     public String query() {

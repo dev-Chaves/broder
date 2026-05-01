@@ -1,5 +1,8 @@
 package org.acme.domain.alarm;
 
+import org.acme.domain.alarm.enums.AlarmSeverity;
+import org.acme.domain.alarm.enums.AlarmStatus;
+import org.acme.domain.alarm.enums.ComparisonOperator;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -10,8 +13,16 @@ class AlarmTest {
 
     @Test
     void shouldCreateAlarmWithCondition() {
-        AlarmCondition condition = new AlarmCondition("up", ComparisonOperator.GT, "0");
-        Alarm alarm = new Alarm("Test Alarm", "A test alarm", condition);
+        AlarmCondition condition = AlarmCondition.builder()
+                .query("up")
+                .operator(ComparisonOperator.GT)
+                .threshold("0")
+                .build();
+        Alarm alarm = Alarm.builder()
+                .name("Test Alarm")
+                .description("A test alarm")
+                .condition(condition)
+                .build();
 
         assertEquals("Test Alarm", alarm.getName());
         assertEquals("A test alarm", alarm.getDescription());
@@ -25,16 +36,28 @@ class AlarmTest {
 
     @Test
     void shouldRejectBlankName() {
-        AlarmCondition condition = new AlarmCondition("up", ComparisonOperator.GT, "0");
+        AlarmCondition condition = AlarmCondition.builder()
+                .query("up")
+                .operator(ComparisonOperator.GT)
+                .threshold("0")
+                .build();
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                () -> new Alarm("", "desc", condition));
+                () -> Alarm.builder()
+                        .name("")
+                        .description("desc")
+                        .condition(condition)
+                        .build());
         assertEquals("Name cannot be blank", ex.getMessage());
     }
 
     @Test
     void shouldRejectNullCondition() {
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
-                () -> new Alarm("Test", "desc", null));
+                () -> Alarm.builder()
+                        .name("Test")
+                        .description("desc")
+                        .condition(null)
+                        .build());
         assertEquals("Condition cannot be null", ex.getMessage());
     }
 
@@ -42,35 +65,66 @@ class AlarmTest {
 
     @Test
     void evaluateShouldReturnFiringWhenConditionMatches() {
-        AlarmCondition condition = new AlarmCondition("up", ComparisonOperator.GT, "0");
-        Alarm alarm = new Alarm("Test", "desc", condition);
+        AlarmCondition condition = AlarmCondition.builder()
+                .query("up")
+                .operator(ComparisonOperator.GT)
+                .threshold("0")
+                .build();
+        Alarm alarm = Alarm.builder()
+                .name("Test")
+                .description("desc")
+                .condition(condition)
+                .build();
 
         assertEquals(AlarmStatus.FIRING, alarm.evaluate(1.0));
     }
 
     @Test
     void evaluateShouldReturnResolvedWhenWasFiringAndConditionNoLongerMatches() {
-        AlarmCondition condition = new AlarmCondition("up", ComparisonOperator.GT, "0");
-        Alarm alarm = new Alarm("Test", "desc", condition);
-        alarm.setStatus(AlarmStatus.FIRING);
+        AlarmCondition condition = AlarmCondition.builder()
+                .query("up")
+                .operator(ComparisonOperator.GT)
+                .threshold("0")
+                .build();
+        Alarm alarm = Alarm.builder()
+                .name("Test")
+                .description("desc")
+                .condition(condition)
+                .status(AlarmStatus.FIRING)
+                .build();
 
         assertEquals(AlarmStatus.RESOLVED, alarm.evaluate(-1.0));
     }
 
     @Test
     void evaluateShouldReturnActiveWhenNotFiringAndConditionDoesNotMatch() {
-        AlarmCondition condition = new AlarmCondition("up", ComparisonOperator.GT, "0");
-        Alarm alarm = new Alarm("Test", "desc", condition);
-        alarm.setStatus(AlarmStatus.ACTIVE);
+        AlarmCondition condition = AlarmCondition.builder()
+                .query("up")
+                .operator(ComparisonOperator.GT)
+                .threshold("0")
+                .build();
+        Alarm alarm = Alarm.builder()
+                .name("Test")
+                .description("desc")
+                .condition(condition)
+                .build();
 
         assertEquals(AlarmStatus.ACTIVE, alarm.evaluate(-1.0));
     }
 
     @Test
     void evaluateShouldReturnFiringWhenAlreadyFiringAndStillMatches() {
-        AlarmCondition condition = new AlarmCondition("up", ComparisonOperator.GT, "0");
-        Alarm alarm = new Alarm("Test", "desc", condition);
-        alarm.setStatus(AlarmStatus.FIRING);
+        AlarmCondition condition = AlarmCondition.builder()
+                .query("up")
+                .operator(ComparisonOperator.GT)
+                .threshold("0")
+                .build();
+        Alarm alarm = Alarm.builder()
+                .name("Test")
+                .description("desc")
+                .condition(condition)
+                .status(AlarmStatus.FIRING)
+                .build();
 
         assertEquals(AlarmStatus.FIRING, alarm.evaluate(1.0));
     }
@@ -79,8 +133,16 @@ class AlarmTest {
 
     @Test
     void recordEvaluationShouldUpdateStatusAndTimestamp() {
-        AlarmCondition condition = new AlarmCondition("up", ComparisonOperator.GT, "0");
-        Alarm alarm = new Alarm("Test", "desc", condition);
+        AlarmCondition condition = AlarmCondition.builder()
+                .query("up")
+                .operator(ComparisonOperator.GT)
+                .threshold("0")
+                .build();
+        Alarm alarm = Alarm.builder()
+                .name("Test")
+                .description("desc")
+                .condition(condition)
+                .build();
         LocalDateTime now = LocalDateTime.now();
 
         alarm.recordEvaluation(AlarmStatus.FIRING, now);
@@ -93,8 +155,16 @@ class AlarmTest {
 
     @Test
     void recordEvaluationShouldNotIncrementUsagesForNonFiring() {
-        AlarmCondition condition = new AlarmCondition("up", ComparisonOperator.GT, "0");
-        Alarm alarm = new Alarm("Test", "desc", condition);
+        AlarmCondition condition = AlarmCondition.builder()
+                .query("up")
+                .operator(ComparisonOperator.GT)
+                .threshold("0")
+                .build();
+        Alarm alarm = Alarm.builder()
+                .name("Test")
+                .description("desc")
+                .condition(condition)
+                .build();
         LocalDateTime now = LocalDateTime.now();
 
         alarm.recordEvaluation(AlarmStatus.RESOLVED, now);
@@ -104,8 +174,16 @@ class AlarmTest {
 
     @Test
     void recordEvaluationShouldIncrementUsagesOnRepeatedFiring() {
-        AlarmCondition condition = new AlarmCondition("up", ComparisonOperator.GT, "0");
-        Alarm alarm = new Alarm("Test", "desc", condition);
+        AlarmCondition condition = AlarmCondition.builder()
+                .query("up")
+                .operator(ComparisonOperator.GT)
+                .threshold("0")
+                .build();
+        Alarm alarm = Alarm.builder()
+                .name("Test")
+                .description("desc")
+                .condition(condition)
+                .build();
         LocalDateTime now = LocalDateTime.now();
 
         alarm.recordEvaluation(AlarmStatus.FIRING, now);
@@ -118,35 +196,59 @@ class AlarmTest {
 
     @Test
     void wasFiringShouldReturnTrueOnlyWhenStatusIsFiring() {
-        AlarmCondition condition = new AlarmCondition("up", ComparisonOperator.GT, "0");
-        Alarm alarm = new Alarm("Test", "desc", condition);
+        AlarmCondition condition = AlarmCondition.builder()
+                .query("up")
+                .operator(ComparisonOperator.GT)
+                .threshold("0")
+                .build();
+        Alarm alarm = Alarm.builder()
+                .name("Test")
+                .description("desc")
+                .condition(condition)
+                .build();
 
         assertFalse(alarm.wasFiring());
 
-        alarm.setStatus(AlarmStatus.FIRING);
+        alarm.recordEvaluation(AlarmStatus.FIRING, LocalDateTime.now());
         assertTrue(alarm.wasFiring());
     }
 
     @Test
     void isTransitioningToFiringShouldDetectTransition() {
-        AlarmCondition condition = new AlarmCondition("up", ComparisonOperator.GT, "0");
-        Alarm alarm = new Alarm("Test", "desc", condition);
+        AlarmCondition condition = AlarmCondition.builder()
+                .query("up")
+                .operator(ComparisonOperator.GT)
+                .threshold("0")
+                .build();
+        Alarm alarm = Alarm.builder()
+                .name("Test")
+                .description("desc")
+                .condition(condition)
+                .build();
 
         assertTrue(alarm.isTransitioningToFiring(AlarmStatus.FIRING));
         assertFalse(alarm.isTransitioningToFiring(AlarmStatus.RESOLVED));
 
-        alarm.setStatus(AlarmStatus.FIRING);
+        alarm.recordEvaluation(AlarmStatus.FIRING, LocalDateTime.now());
         assertFalse(alarm.isTransitioningToFiring(AlarmStatus.FIRING));
     }
 
     @Test
     void isTransitioningFromFiringShouldDetectTransition() {
-        AlarmCondition condition = new AlarmCondition("up", ComparisonOperator.GT, "0");
-        Alarm alarm = new Alarm("Test", "desc", condition);
+        AlarmCondition condition = AlarmCondition.builder()
+                .query("up")
+                .operator(ComparisonOperator.GT)
+                .threshold("0")
+                .build();
+        Alarm alarm = Alarm.builder()
+                .name("Test")
+                .description("desc")
+                .condition(condition)
+                .build();
 
         assertFalse(alarm.isTransitioningFromFiring(AlarmStatus.RESOLVED));
 
-        alarm.setStatus(AlarmStatus.FIRING);
+        alarm.recordEvaluation(AlarmStatus.FIRING, LocalDateTime.now());
         assertTrue(alarm.isTransitioningFromFiring(AlarmStatus.RESOLVED));
         assertFalse(alarm.isTransitioningFromFiring(AlarmStatus.FIRING));
     }
@@ -155,8 +257,16 @@ class AlarmTest {
 
     @Test
     void renameShouldUpdateName() {
-        AlarmCondition condition = new AlarmCondition("up", ComparisonOperator.GT, "0");
-        Alarm alarm = new Alarm("Old", "desc", condition);
+        AlarmCondition condition = AlarmCondition.builder()
+                .query("up")
+                .operator(ComparisonOperator.GT)
+                .threshold("0")
+                .build();
+        Alarm alarm = Alarm.builder()
+                .name("Old")
+                .description("desc")
+                .condition(condition)
+                .build();
 
         alarm.rename("New");
         assertEquals("New", alarm.getName());
@@ -164,8 +274,16 @@ class AlarmTest {
 
     @Test
     void renameShouldRejectBlank() {
-        AlarmCondition condition = new AlarmCondition("up", ComparisonOperator.GT, "0");
-        Alarm alarm = new Alarm("Test", "desc", condition);
+        AlarmCondition condition = AlarmCondition.builder()
+                .query("up")
+                .operator(ComparisonOperator.GT)
+                .threshold("0")
+                .build();
+        Alarm alarm = Alarm.builder()
+                .name("Test")
+                .description("desc")
+                .condition(condition)
+                .build();
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> alarm.rename("  "));
@@ -174,8 +292,16 @@ class AlarmTest {
 
     @Test
     void changeConditionShouldRejectNull() {
-        AlarmCondition condition = new AlarmCondition("up", ComparisonOperator.GT, "0");
-        Alarm alarm = new Alarm("Test", "desc", condition);
+        AlarmCondition condition = AlarmCondition.builder()
+                .query("up")
+                .operator(ComparisonOperator.GT)
+                .threshold("0")
+                .build();
+        Alarm alarm = Alarm.builder()
+                .name("Test")
+                .description("desc")
+                .condition(condition)
+                .build();
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> alarm.changeCondition(null));

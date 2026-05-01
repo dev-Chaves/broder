@@ -2,6 +2,7 @@ package org.acme.domain.alarm;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import org.acme.domain.alarm.dto.*;
+import org.acme.domain.alarm.enums.ComparisonOperator;
 import org.acme.domain.prometheus.PrometheusService;
 import org.acme.domain.prometheus.PrometheusValueExtractor;
 import org.acme.domain.prometheus.dto.PrometheusQueryRequestDTO;
@@ -57,6 +58,24 @@ public class AlarmBuilderService {
         String query = promQLBuilder.build(dto.templateId(), dto.filters());
         String severity = dto.severity() != null ? dto.severity() : template.defaultSeverity();
 
+        double thresholdValue;
+        try {
+            thresholdValue = Double.parseDouble(dto.threshold());
+        } catch (NumberFormatException e) {
+            LOG.warnf("[BUILDER] Invalid threshold value: '%s'", dto.threshold());
+            return new AlarmPreviewResponseDTO(
+                    query,
+                    null,
+                    dto.threshold(),
+                    dto.comparison(),
+                    null,
+                    severity,
+                    template.category(),
+                    "ERROR",
+                    LocalDateTime.now().toString()
+            );
+        }
+
         try {
             var request = new PrometheusQueryRequestDTO(query, null, null, null, null);
             var response = prometheusService.instantQuery(request)
@@ -64,7 +83,7 @@ public class AlarmBuilderService {
 
             double currentValue = PrometheusValueExtractor.extract(response);
             boolean wouldTrigger = ComparisonOperator.fromSymbol(dto.comparison())
-                    .apply(currentValue, Double.parseDouble(dto.threshold()));
+                    .apply(currentValue, thresholdValue);
 
             LOG.infof("[BUILDER] Preview result: currentValue=%.6f, wouldTrigger=%s", currentValue, wouldTrigger);
 
@@ -98,12 +117,7 @@ public class AlarmBuilderService {
     public AlarmPreviewResponseDTO validate(AlarmBuilderRequestDTO dto) {
         LOG.infof("[BUILDER] Validating alarm: template=%s", dto.templateId());
 
-        try {
-            AlarmTemplateRegistry.findById(dto.templateId());
-        } catch (IllegalArgumentException e) {
-            LOG.warnf("[BUILDER] Invalid template ID: %s", dto.templateId());
-            throw new IllegalArgumentException("Invalid template ID: " + dto.templateId());
-        }
+        AlarmTemplateRegistry.findById(dto.templateId());
 
         String query = promQLBuilder.build(dto.templateId(), dto.filters());
         AlarmTemplate template = AlarmTemplateRegistry.findById(dto.templateId());

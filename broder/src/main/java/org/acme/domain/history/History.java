@@ -2,7 +2,7 @@ package org.acme.domain.history;
 
 import jakarta.persistence.*;
 import org.acme.domain.alarm.Alarm;
-import org.acme.domain.alarm.AlarmStatus;
+import org.acme.domain.alarm.enums.AlarmStatus;
 
 import java.time.LocalDateTime;
 
@@ -25,10 +25,11 @@ public class History {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public History() {
+    protected History() {
+        // JPA
     }
 
-    public History(Alarm alarm, AlarmStatus status, Double value) {
+    private History(Alarm alarm, AlarmStatus status, Double value) {
         this.alarm = alarm;
         this.status = status;
         this.value = value;
@@ -38,43 +39,70 @@ public class History {
         return new History(alarm, status, value);
     }
 
-    public Long getId() {
-        return id;
+    // --- Builder ---
+
+    public static Builder builder() {
+        return new Builder();
     }
 
-    private void setId(Long id) {
-        this.id = id;
+    public static class Builder {
+        private Alarm alarm;
+        private AlarmStatus status;
+        private Double value;
+        private LocalDateTime createdAt = LocalDateTime.now();
+
+        private Builder() {
+        }
+
+        public Builder alarm(Alarm alarm) {
+            this.alarm = alarm;
+            return this;
+        }
+
+        public Builder status(AlarmStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        public Builder value(Double value) {
+            this.value = value;
+            return this;
+        }
+
+        public Builder createdAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public History build() {
+            History history = new History();
+            history.alarm = alarm;
+            history.status = status;
+            history.value = value;
+            history.createdAt = createdAt;
+            return history;
+        }
+    }
+
+    // --- Accessors ---
+
+    public Long getId() {
+        return id;
     }
 
     public Alarm getAlarm() {
         return alarm;
     }
 
-    private void setAlarm(Alarm alarm) {
-        this.alarm = alarm;
-    }
-
     public AlarmStatus getStatus() {
         return status;
-    }
-
-    public void setStatus(AlarmStatus status) {
-        this.status = status;
     }
 
     public Double getValue() {
         return value;
     }
 
-    public void setValue(Double value) {
-        this.value = value;
-    }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }

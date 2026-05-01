@@ -6,6 +6,9 @@ import jakarta.transaction.Transactional;
 import org.acme.domain.alarm.dto.AlarmRequestDTO;
 import org.acme.domain.alarm.dto.AlarmResponseDTO;
 import org.acme.domain.alarm.dto.AlarmUpdateDTO;
+import org.acme.domain.alarm.enums.AlarmSeverity;
+import org.acme.domain.alarm.enums.AlarmStatus;
+import org.acme.domain.alarm.enums.ComparisonOperator;
 import org.acme.domain.shared.api.PageResponse;
 import org.jboss.logging.Logger;
 
@@ -29,22 +32,26 @@ public class AlarmService {
         AlarmCondition condition = buildCondition(dto.query(), dto.comparison(), dto.threshold());
         LOG.infof("[SERVICE] Creating new alarm: name='%s', condition=%s", dto.name(), condition);
 
-        Alarm alarm = new Alarm(dto.name(), dto.description(), condition);
+        Alarm.Builder builder = Alarm.builder()
+                .name(dto.name())
+                .description(dto.description())
+                .condition(condition);
         if (dto.evaluationIntervalSeconds() != null) {
-            alarm.setEvaluationIntervalSeconds(dto.evaluationIntervalSeconds());
+            builder.evaluationIntervalSeconds(dto.evaluationIntervalSeconds());
         }
         if (dto.severity() != null) {
-            alarm.setSeverity(AlarmSeverity.valueOf(dto.severity()));
+            builder.severity(parseSeverity(dto.severity()));
         }
         if (dto.category() != null) {
-            alarm.setCategory(dto.category());
+            builder.category(dto.category());
         }
         if (dto.templateId() != null) {
-            alarm.setTemplateId(dto.templateId());
+            builder.templateId(dto.templateId());
         }
         if (dto.webhookUrl() != null && !dto.webhookUrl().isBlank()) {
-            alarm.setWebhookUrl(dto.webhookUrl());
+            builder.webhookUrl(dto.webhookUrl());
         }
+        Alarm alarm = builder.build();
         alarmRepository.persist(alarm);
 
         LOG.infof("[SERVICE] Alarm created successfully: id=%d, name='%s'", alarm.getId(), alarm.getName());
@@ -103,11 +110,11 @@ public class AlarmService {
             String newThreshold = dto.threshold() != null ? dto.threshold() : current.threshold();
             alarm.changeCondition(buildCondition(newQuery, newComparison, newThreshold));
         }
-        if (dto.evaluationIntervalSeconds() != null) alarm.setEvaluationIntervalSeconds(dto.evaluationIntervalSeconds());
-        if (dto.enabled() != null) alarm.setEnabled(dto.enabled());
-        if (dto.severity() != null) alarm.setSeverity(AlarmSeverity.valueOf(dto.severity()));
+        if (dto.evaluationIntervalSeconds() != null) alarm.changeEvaluationIntervalSeconds(dto.evaluationIntervalSeconds());
+        if (dto.enabled() != null) alarm.toggleEnabled(dto.enabled());
+        if (dto.severity() != null) alarm.changeSeverity(parseSeverity(dto.severity()));
         if (dto.webhookUrl() != null) {
-            alarm.setWebhookUrl(dto.webhookUrl().isBlank() ? null : dto.webhookUrl());
+            alarm.changeWebhookUrl(dto.webhookUrl().isBlank() ? null : dto.webhookUrl());
         }
 
         return toResponseDTO(alarm);
@@ -140,9 +147,13 @@ public class AlarmService {
 
         if (newStatus == AlarmStatus.FIRING && previousStatus != AlarmStatus.FIRING) {
             LOG.infof("[SERVICE] Alarm id=%d transitioned to FIRING (previous: %s)", id, previousStatus);
-        } else if (previousStatus == AlarmStatus.FIRING && newStatus == AlarmStatus.RESOLVED) {
+        }
+
+        if (previousStatus == AlarmStatus.FIRING && newStatus == AlarmStatus.RESOLVED) {
             LOG.infof("[SERVICE] Alarm id=%d transitioned from FIRING to RESOLVED", id);
-        } else if (newStatus == AlarmStatus.ERROR) {
+        }
+
+        if (newStatus == AlarmStatus.ERROR) {
             LOG.warnf("[SERVICE] Alarm id=%d evaluation resulted in ERROR (previous: %s)", id, previousStatus);
         }
     }
@@ -159,51 +170,68 @@ public class AlarmService {
 
         LOG.info("[SERVICE] Creating 4 default alarms...");
 
-        alarmRepository.persist(new Alarm(
-                "CPU Usage High",
-                "Alert when CPU usage exceeds 80%",
-                new AlarmCondition("process_cpu_usage", ComparisonOperator.GT, "0.8")
-        ));
+        alarmRepository.persist(Alarm.builder()
+                .name("CPU Usage High")
+                .description("Alert when CPU usage exceeds 80%")
+                .condition(AlarmCondition.builder()
+                        .query("process_cpu_usage")
+                        .operator(ComparisonOperator.GT)
+                        .threshold("0.8")
+                        .build())
+                .build());
         LOG.debug("[SERVICE] Created default alarm: CPU Usage High");
 
-        alarmRepository.persist(new Alarm(
-                "Memory Usage High",
-                "Alert when heap memory usage exceeds 85%",
-                new AlarmCondition(
-                        "(jvm_memory_used_bytes{area=\"heap\"} / jvm_memory_max_bytes{area=\"heap\"})",
-                        ComparisonOperator.GT,
-                        "0.85"
-                )
-        ));
+        alarmRepository.persist(Alarm.builder()
+                .name("Memory Usage High")
+                .description("Alert when heap memory usage exceeds 85%")
+                .condition(AlarmCondition.builder()
+                        .query("(jvm_memory_used_bytes{area=\"heap\"} / jvm_memory_max_bytes{area=\"heap\"})")
+                        .operator(ComparisonOperator.GT)
+                        .threshold("0.85")
+                        .build())
+                .build());
         LOG.debug("[SERVICE] Created default alarm: Memory Usage High");
 
-        alarmRepository.persist(new Alarm(
-                "HTTP 5xx Errors",
-                "Alert when 5xx error rate exceeds 5% per minute",
-                new AlarmCondition(
-                        "rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[1m])",
-                        ComparisonOperator.GT,
-                        "0.05"
-                )
-        ));
+        alarmRepository.persist(Alarm.builder()
+                .name("HTTP 5xx Errors")
+                .description("Alert when 5xx error rate exceeds 5% per minute")
+                .condition(AlarmCondition.builder()
+                        .query("rate(http_server_requests_seconds_count{outcome=\"SERVER_ERROR\"}[1m])")
+                        .operator(ComparisonOperator.GT)
+                        .threshold("0.05")
+                        .build())
+                .build());
         LOG.debug("[SERVICE] Created default alarm: HTTP 5xx Errors");
 
-        alarmRepository.persist(new Alarm(
-                "HTTP 4xx Errors",
-                "Alert when 4xx error rate exceeds 10% per minute",
-                new AlarmCondition(
-                        "rate(http_server_requests_seconds_count{outcome=\"CLIENT_ERROR\"}[1m])",
-                        ComparisonOperator.GT,
-                        "0.1"
-                )
-        ));
+        alarmRepository.persist(
+                Alarm.builder()
+                .name("HTTP 4xx Errors")
+                .description("Alert when 4xx error rate exceeds 10% per minute")
+                .condition(AlarmCondition.builder()
+                        .query("rate(http_server_requests_seconds_count{outcome=\"CLIENT_ERROR\"}[1m])")
+                        .operator(ComparisonOperator.GT)
+                        .threshold("0.1")
+                        .build())
+                .build());
         LOG.debug("[SERVICE] Created default alarm: HTTP 4xx Errors");
 
         LOG.infof("[SERVICE] Default alarms seeded successfully. Total: %d", alarmRepository.count());
     }
 
     private AlarmCondition buildCondition(String query, String comparison, String threshold) {
-        return new AlarmCondition(query, ComparisonOperator.fromSymbol(comparison), threshold);
+        return AlarmCondition.builder()
+                .query(query)
+                .operator(ComparisonOperator.fromSymbol(comparison))
+                .threshold(threshold)
+                .build();
+    }
+
+    private AlarmSeverity parseSeverity(String severity) {
+        try {
+            return AlarmSeverity.valueOf(severity.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid severity: '" + severity + "'. Must be one of: LOW, MEDIUM, HIGH, CRITICAL");
+        }
     }
 
     private AlarmResponseDTO toResponseDTO(Alarm alarm) {

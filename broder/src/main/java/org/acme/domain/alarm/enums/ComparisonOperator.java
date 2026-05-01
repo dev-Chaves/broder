@@ -1,4 +1,4 @@
-package org.acme.domain.alarm;
+package org.acme.domain.alarm.enums;
 
 public enum ComparisonOperator {
     GT(">"),

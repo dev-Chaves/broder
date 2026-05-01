@@ -1,6 +1,8 @@
 package org.acme.domain.alarm;
 
 import jakarta.persistence.*;
+import org.acme.domain.alarm.enums.AlarmSeverity;
+import org.acme.domain.alarm.enums.AlarmStatus;
 
 import java.time.LocalDateTime;
 
@@ -48,15 +50,128 @@ public class Alarm {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public Alarm() {
+    protected Alarm() {
         this.usages = 0L;
     }
 
-    public Alarm(String name, String description, AlarmCondition condition) {
-        this.rename(name);
-        this.changeDescription(description);
-        this.changeCondition(condition);
-        this.usages = 0L;
+    // --- Builder ---
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String name;
+        private String description;
+        private AlarmCondition condition;
+        private boolean enabled = true;
+        private AlarmStatus status = AlarmStatus.ACTIVE;
+        private AlarmSeverity severity = AlarmSeverity.MEDIUM;
+        private String category;
+        private String templateId;
+        private Integer evaluationIntervalSeconds = 20;
+        private LocalDateTime lastEvaluatedAt;
+        private LocalDateTime lastFiredAt;
+        private Long usages = 0L;
+        private String webhookUrl;
+        private LocalDateTime createdAt = LocalDateTime.now();
+
+        private Builder() {
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder condition(AlarmCondition condition) {
+            this.condition = condition;
+            return this;
+        }
+
+        public Builder enabled(boolean enabled) {
+            this.enabled = enabled;
+            return this;
+        }
+
+        public Builder status(AlarmStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        public Builder severity(AlarmSeverity severity) {
+            this.severity = severity;
+            return this;
+        }
+
+        public Builder category(String category) {
+            this.category = category;
+            return this;
+        }
+
+        public Builder templateId(String templateId) {
+            this.templateId = templateId;
+            return this;
+        }
+
+        public Builder evaluationIntervalSeconds(Integer evaluationIntervalSeconds) {
+            this.evaluationIntervalSeconds = evaluationIntervalSeconds;
+            return this;
+        }
+
+        public Builder lastEvaluatedAt(LocalDateTime lastEvaluatedAt) {
+            this.lastEvaluatedAt = lastEvaluatedAt;
+            return this;
+        }
+
+        public Builder lastFiredAt(LocalDateTime lastFiredAt) {
+            this.lastFiredAt = lastFiredAt;
+            return this;
+        }
+
+        public Builder usages(Long usages) {
+            this.usages = usages;
+            return this;
+        }
+
+        public Builder webhookUrl(String webhookUrl) {
+            this.webhookUrl = webhookUrl;
+            return this;
+        }
+
+        public Builder createdAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Alarm build() {
+            Alarm alarm = new Alarm();
+            alarm.name = requireNonBlank(name, "Name");
+            if (description != null && !description.isBlank()) {
+                alarm.description = description.trim();
+            }
+            if (condition == null) {
+                throw new IllegalArgumentException("Condition cannot be null");
+            }
+            alarm.condition = condition;
+            alarm.enabled = enabled;
+            alarm.status = status;
+            alarm.severity = severity;
+            alarm.category = category;
+            alarm.templateId = templateId;
+            alarm.evaluationIntervalSeconds = evaluationIntervalSeconds;
+            alarm.lastEvaluatedAt = lastEvaluatedAt;
+            alarm.lastFiredAt = lastFiredAt;
+            alarm.usages = usages;
+            alarm.webhookUrl = webhookUrl;
+            alarm.createdAt = createdAt;
+            return alarm;
+        }
     }
 
     // --- Domain behaviour ---
@@ -111,39 +226,27 @@ public class Alarm {
         this.condition = condition;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void toggleEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
-    public void setStatus(AlarmStatus status) {
-        this.status = status;
-    }
-
-    public void setSeverity(AlarmSeverity severity) {
+    public void changeSeverity(AlarmSeverity severity) {
         this.severity = severity;
     }
 
-    public void setCategory(String category) {
+    public void changeCategory(String category) {
         this.category = category;
     }
 
-    public void setTemplateId(String templateId) {
+    public void changeTemplateId(String templateId) {
         this.templateId = templateId;
     }
 
-    public void setEvaluationIntervalSeconds(Integer evaluationIntervalSeconds) {
+    public void changeEvaluationIntervalSeconds(Integer evaluationIntervalSeconds) {
         this.evaluationIntervalSeconds = evaluationIntervalSeconds;
     }
 
-    public void setLastEvaluatedAt(LocalDateTime lastEvaluatedAt) {
-        this.lastEvaluatedAt = lastEvaluatedAt;
-    }
-
-    public void setLastFiredAt(LocalDateTime lastFiredAt) {
-        this.lastFiredAt = lastFiredAt;
-    }
-
-    public void setWebhookUrl(String webhookUrl) {
+    public void changeWebhookUrl(String webhookUrl) {
         this.webhookUrl = webhookUrl;
     }
 
@@ -211,7 +314,7 @@ public class Alarm {
 
     // --- Private helpers ---
 
-    private String requireNonBlank(String value, String fieldName) {
+    private static String requireNonBlank(String value, String fieldName) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException(fieldName + " cannot be blank");
         }
